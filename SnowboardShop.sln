@@ -1,8 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowboardShop.Api", "SnowboardShop.Api\SnowboardShop.Api.csproj", "{9C483398-5396-4581-BAD9-501A07ED2EC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowboardShop.Application", "SnowboardShop.Application\SnowboardShop.Application.csproj", "{8C013820-7C63-4750-8679-30FC5A87C31F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowboardShop.Contracts", "SnowboardShop.Contracts\SnowboardShop.Contracts.csproj", "{031802E7-745D-47AB-9F69-02D6F8497B70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C483398-5396-4581-BAD9-501A07ED2EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C483398-5396-4581-BAD9-501A07ED2EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C483398-5396-4581-BAD9-501A07ED2EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C483398-5396-4581-BAD9-501A07ED2EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C013820-7C63-4750-8679-30FC5A87C31F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C013820-7C63-4750-8679-30FC5A87C31F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C013820-7C63-4750-8679-30FC5A87C31F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C013820-7C63-4750-8679-30FC5A87C31F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{031802E7-745D-47AB-9F69-02D6F8497B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{031802E7-745D-47AB-9F69-02D6F8497B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{031802E7-745D-47AB-9F69-02D6F8497B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{031802E7-745D-47AB-9F69-02D6F8497B70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
