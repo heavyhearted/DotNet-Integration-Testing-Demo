@@ -65,4 +65,16 @@ public class SnowboardsController : ControllerBase
         var response = snowboard.MapToResponse();
         return Ok(response);
     }
+    
+    [HttpDelete(ApiEndpoints.Snowboards.Delete)]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    {
+        var deleted = await _snowboardRepository.DeleteByIdAsync(id);
+        if (!deleted)
+        {
+            return NotFound();
+        }
+        
+        return Ok();
+    }
 }
