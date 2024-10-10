@@ -13,7 +13,7 @@ public static class ContractMapping
             Id = Guid.NewGuid(),
             SnowboardBrand = request.SnowboardBrand,
             YearOfRelease = request.YearOfRelease,
-            SnowboardProfile = request.SnowboardProfile.ToList()
+            SnowboardLineup = request.SnowboardLineup.ToList()
         };
     }
     
@@ -24,7 +24,7 @@ public static class ContractMapping
             Id = id,
             SnowboardBrand = request.SnowboardBrand,
             YearOfRelease = request.YearOfRelease,
-            SnowboardProfile = request.SnowboardProfile.ToList()
+            SnowboardLineup = request.SnowboardLineup.ToList()
         };
     }
     
@@ -34,8 +34,9 @@ public static class ContractMapping
         {
             Id = snowboard.Id,
             SnowboardBrand = snowboard.SnowboardBrand,
+            Slug = snowboard.Slug,
             YearOfRelease = snowboard.YearOfRelease,
-            SnowboardProfile = snowboard.SnowboardProfile
+            SnowboardLineup = snowboard.SnowboardLineup
         };
     }
     

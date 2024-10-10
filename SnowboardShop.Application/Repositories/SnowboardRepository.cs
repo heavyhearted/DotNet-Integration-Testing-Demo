@@ -20,6 +20,12 @@ public class SnowboardRepository : ISnowboardRepository
         return Task.FromResult(snowboard);
     }
 
+    public Task<Snowboard?> GetBySlugAsync(string slug)
+    {
+        var snowboard = _snowboards.SingleOrDefault(x => x.Slug == slug);
+        return Task.FromResult(snowboard);
+    }
+    
     public Task<IEnumerable<Snowboard>> GetAllAsync()
     {
         return Task.FromResult(_snowboards.AsEnumerable());

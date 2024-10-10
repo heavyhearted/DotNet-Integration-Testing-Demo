@@ -6,5 +6,5 @@ public class UpdateSnowboardRequest
 
     public required int YearOfRelease { get; init; }
 
-    public required IEnumerable<string> SnowboardProfile { get; init; } = Enumerable.Empty<string>();
+    public required IEnumerable<string> SnowboardLineup { get; init; } = Enumerable.Empty<string>();
 }
