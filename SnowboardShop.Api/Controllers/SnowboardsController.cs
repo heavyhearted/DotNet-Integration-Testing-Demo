@@ -51,4 +51,18 @@ public class SnowboardsController : ControllerBase
         
         return Ok(snowboardsResponse);
     }
+    
+    [HttpPut(ApiEndpoints.Snowboards.Update)]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateSnowboardRequest request)
+    {
+        var snowboard = request.MapToSnowboard(id);
+        var updatedSnowboard = await _snowboardRepository.UpdateAsync(snowboard);
+        if (!updatedSnowboard)
+        {
+            return NotFound();
+        }
+        
+        var response = snowboard.MapToResponse();
+        return Ok(response);
+    }
 }

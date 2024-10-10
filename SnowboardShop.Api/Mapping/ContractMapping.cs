@@ -17,6 +17,17 @@ public static class ContractMapping
         };
     }
     
+    public static Snowboard MapToSnowboard(this UpdateSnowboardRequest request, Guid id)
+    {
+        return new Snowboard
+        {
+            Id = id,
+            SnowboardBrand = request.SnowboardBrand,
+            YearOfRelease = request.YearOfRelease,
+            SnowboardProfile = request.SnowboardProfile.ToList()
+        };
+    }
+    
     public static SnowboardResponse MapToResponse(this Snowboard snowboard)
     {
         return new SnowboardResponse
