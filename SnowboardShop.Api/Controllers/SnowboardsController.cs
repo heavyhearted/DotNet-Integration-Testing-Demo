@@ -24,21 +24,22 @@ public class SnowboardsController : ControllerBase
         
         var snowboardResponse = snowboard.MapToResponse();
         
-        return CreatedAtAction(nameof(Get), new { id = snowboard.Id }, snowboardResponse);
+        return CreatedAtAction(nameof(Get), new { idOrSlug = snowboard.Id }, snowboardResponse);
 
     }
     
     [HttpGet(ApiEndpoints.Snowboards.Get)]
-    public async Task<IActionResult> Get([FromRoute] Guid id)
-    {
-        var snowboard = await _snowboardRepository.GetByIdAsync(id);
+    public async Task<IActionResult> Get([FromRoute] string idOrSlug)
+    { 
+       var snowboard = Guid.TryParse(idOrSlug, out var id)
+            ? await _snowboardRepository.GetByIdAsync(id)
+            : await _snowboardRepository.GetBySlugAsync(idOrSlug);
         if (snowboard is null)
         {
             return NotFound();
         }
-        
+
         var response = snowboard.MapToResponse();
-        
         return Ok(response);
     }
     

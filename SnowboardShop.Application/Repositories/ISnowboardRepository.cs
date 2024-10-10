@@ -8,6 +8,9 @@ public interface ISnowboardRepository
     
     Task<Snowboard?> GetByIdAsync(Guid id);
     
+    Task<Snowboard?> GetBySlugAsync(string slug);
+
+    
     Task<IEnumerable<Snowboard>> GetAllAsync();
     
     Task<bool> UpdateAsync(Snowboard snowboard);
