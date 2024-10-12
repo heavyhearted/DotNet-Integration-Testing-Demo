@@ -16,4 +16,6 @@ public interface ISnowboardRepository
     Task<bool> UpdateAsync(Snowboard snowboard);
     
     Task<bool> DeleteByIdAsync(Guid id);
+    
+    Task<bool> ExistsByIdAsync(Guid id);
 }
