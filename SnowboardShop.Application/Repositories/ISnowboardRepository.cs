@@ -4,17 +4,17 @@ namespace SnowboardShop.Application.Repositories;
 
 public interface ISnowboardRepository
 {
-    Task<bool> CreateAsync(Snowboard snowboard);
+    Task<bool> CreateAsync(Snowboard snowboard, CancellationToken token = default);
     
-    Task<Snowboard?> GetByIdAsync(Guid id);
+    Task<Snowboard?> GetByIdAsync(Guid id, CancellationToken token = default);
     
-    Task<Snowboard?> GetBySlugAsync(string slug);
+    Task<Snowboard?> GetBySlugAsync(string slug, CancellationToken token = default);
     
-    Task<IEnumerable<Snowboard>> GetAllAsync();
+    Task<IEnumerable<Snowboard>> GetAllAsync(CancellationToken token = default);
     
-    Task<bool> UpdateAsync(Snowboard snowboard);
+    Task<bool> UpdateAsync(Snowboard snowboard, CancellationToken token = default);
     
-    Task<bool> DeleteByIdAsync(Guid id);
+    Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default);
     
-    Task<bool> ExistsByIdAsync(Guid id);
+    Task<bool> ExistsByIdAsync(Guid id, CancellationToken token = default);
 }

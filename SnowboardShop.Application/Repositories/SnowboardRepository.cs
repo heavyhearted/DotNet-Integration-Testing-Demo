@@ -13,15 +13,15 @@ public class SnowboardRepository : ISnowboardRepository
         _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public async Task<bool> CreateAsync(Snowboard snowboard)
+    public async Task<bool> CreateAsync(Snowboard snowboard, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         using var transaction = connection.BeginTransaction();
 
         var result = await connection.ExecuteAsync(new CommandDefinition("""
                                                                          insert into snowboards (id, slug, snowboardbrand, yearofrelease) 
                                                                          values (@Id, @Slug, @SnowboardBrand, @YearOfRelease)
-                                                                         """, snowboard));
+                                                                         """, snowboard, cancellationToken: token));
 
         if (result > 0)
         {
@@ -31,7 +31,7 @@ public class SnowboardRepository : ISnowboardRepository
                                                                         insert into snowboardlineup (snowboardid, snowboardmodel) 
                                                                         values (@SnowboardId, @SnowboardModel)
                                                                     """,
-                    new { SnowboardId = snowboard.Id, SnowBoardModel = item }));
+                    new { SnowboardId = snowboard.Id, SnowBoardModel = item }, cancellationToken: token));
             }
         }
 
@@ -41,13 +41,13 @@ public class SnowboardRepository : ISnowboardRepository
     }
 
 
-    public async Task<Snowboard?> GetByIdAsync(Guid id)
+    public async Task<Snowboard?> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         var snowboard = await connection.QuerySingleOrDefaultAsync<Snowboard>(
             new CommandDefinition("""
                                   select * from snowboards where id = @id
-                                  """, new { id }));
+                                  """, new { id }, cancellationToken: token));
 
         if (snowboard is null)
         {
@@ -57,7 +57,7 @@ public class SnowboardRepository : ISnowboardRepository
         var snowboardLineup = await connection.QueryAsync<string>(
             new CommandDefinition("""
                                   select snowboardmodel from snowboardlineup where snowboardid = @id 
-                                  """, new { id }));
+                                  """, new { id }, cancellationToken: token));
 
         foreach (var item in snowboardLineup)
         {
@@ -68,13 +68,13 @@ public class SnowboardRepository : ISnowboardRepository
     }
 
 
-    public async Task<Snowboard?> GetBySlugAsync(string slug)
+    public async Task<Snowboard?> GetBySlugAsync(string slug, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         var snowboard = await connection.QuerySingleOrDefaultAsync<Snowboard>(
             new CommandDefinition("""
                                   select * from snowboards where slug = @slug
-                                  """, new { slug }));
+                                  """, new { slug }, cancellationToken: token));
 
         if (snowboard is null)
         {
@@ -85,7 +85,7 @@ public class SnowboardRepository : ISnowboardRepository
             select snowboardmodel 
             from snowboardlineup 
             where snowboardid = @id 
-            """, new { id = snowboard.Id }));
+            """, new { id = snowboard.Id }, cancellationToken: token));
 
         foreach (var item in snowboardLineup)
         {
@@ -95,15 +95,15 @@ public class SnowboardRepository : ISnowboardRepository
         return snowboard;
     }
 
-    public async Task<IEnumerable<Snowboard>> GetAllAsync()
+    public async Task<IEnumerable<Snowboard>> GetAllAsync(CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         var result = await connection.QueryAsync<dynamic>(new CommandDefinition("""
                 select s.*, string_agg(sl.snowboardmodel, ',') as snowboardlineup
                 from snowboards s 
                 left join snowboardlineup sl on s.id = sl.snowboardid
                 group by s.id
-            """));
+            """, cancellationToken: token));
 
         return result.Select(x => new Snowboard
         {
@@ -115,15 +115,15 @@ public class SnowboardRepository : ISnowboardRepository
     }
 
 
-    public async Task<bool> UpdateAsync(Snowboard snowboard)
+    public async Task<bool> UpdateAsync(Snowboard snowboard, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         using var transaction = connection.BeginTransaction();
 
         await connection.ExecuteAsync(
             new CommandDefinition("""
             delete from snowboardlineup where snowboardid = @id
-            """, new { id = snowboard.Id }));
+            """, new { id = snowboard.Id }, cancellationToken: token));
 
         foreach (var item in snowboard.SnowboardLineup)
         {
@@ -131,41 +131,41 @@ public class SnowboardRepository : ISnowboardRepository
                                                                 insert into snowboardlineup (snowboardid, snowboardmodel) 
                                                                 values (@SnowboardId, @SnowboardModel)
                                                                 """,
-                new { SnowboardId = snowboard.Id, SnowboardModel = item }));
+                new { SnowboardId = snowboard.Id, SnowboardModel = item }, cancellationToken: token));
         }
 
         var result = await connection.ExecuteAsync(new CommandDefinition("""
                                                                          update snowboards set slug = @Slug, snowboardbrand = @SnowboardBrand, yearofrelease = @YearOfRelease  
                                                                          where id = @Id
-                                                                         """, snowboard));
+                                                                         """, snowboard, cancellationToken: token));
 
         transaction.Commit();
         return result > 0;
     }
 
 
-    public async Task<bool> DeleteByIdAsync(Guid id)
+    public async Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         using var transaction = connection.BeginTransaction();
         
         await connection.ExecuteAsync(new CommandDefinition("""
                                                             delete from snowboardlineup where snowboardid = @id
-                                                            """, new { id }));
+                                                            """, new { id }, cancellationToken: token));
         
         var result = await connection.ExecuteAsync(new CommandDefinition("""
                                                                          delete from snowboards where id = @id
-                                                                         """, new { id }));
+                                                                         """, new { id }, cancellationToken: token));
         
         transaction.Commit();
         return result > 0;
     }
 
-    public async Task<bool> ExistsByIdAsync(Guid id)
+    public async Task<bool> ExistsByIdAsync(Guid id, CancellationToken token = default)
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         return await connection.ExecuteScalarAsync<bool>(new CommandDefinition("""
                                                                                select count(1) from snowboards where id = @id
-                                                                               """, new { id }));
+                                                                               """, new { id }, cancellationToken: token));
     }
 }

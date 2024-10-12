@@ -15,42 +15,42 @@ public class SnowboardService : ISnowboardService
         _snowboardValidator = snowboardValidator;
     }
 
-    public async Task<bool> CreateAsync(Snowboard snowboard)
+    public async Task<bool> CreateAsync(Snowboard snowboard, CancellationToken token = default)
     {
-        await _snowboardValidator.ValidateAndThrowAsync(snowboard);
-        return await _snowboardRepository.CreateAsync(snowboard);
+        await _snowboardValidator.ValidateAndThrowAsync(snowboard, cancellationToken: token);
+        return await _snowboardRepository.CreateAsync(snowboard, token);
     }
 
-    public Task<Snowboard?> GetByIdAsync(Guid id)
+    public Task<Snowboard?> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        return _snowboardRepository.GetByIdAsync(id);
+        return _snowboardRepository.GetByIdAsync(id, token);
     }
 
-    public Task<Snowboard?> GetBySlugAsync(string slug)
+    public Task<Snowboard?> GetBySlugAsync(string slug, CancellationToken token = default)
     {
-        return _snowboardRepository.GetBySlugAsync(slug);
+        return _snowboardRepository.GetBySlugAsync(slug, token);
     }
 
-    public Task<IEnumerable<Snowboard>> GetAllAsync()
+    public Task<IEnumerable<Snowboard>> GetAllAsync(CancellationToken token = default)
     {
-        return _snowboardRepository.GetAllAsync();
+        return _snowboardRepository.GetAllAsync(token);
     }
 
-    public async Task<Snowboard?> UpdateAsync(Snowboard snowboard)
+    public async Task<Snowboard?> UpdateAsync(Snowboard snowboard, CancellationToken token = default)
     {
-        await _snowboardValidator.ValidateAndThrowAsync(snowboard);
+        await _snowboardValidator.ValidateAndThrowAsync(snowboard, cancellationToken: token);
         var snowboardExists = await _snowboardRepository.ExistsByIdAsync(snowboard.Id);
         if (!snowboardExists)
         {
             return null;
         }
 
-        await _snowboardRepository.UpdateAsync(snowboard);
+        await _snowboardRepository.UpdateAsync(snowboard, token);
         return snowboard;
     }
 
-    public Task<bool> DeleteByIdAsync(Guid id)
+    public Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default)
     {
-        return _snowboardRepository.DeleteByIdAsync(id);
+        return _snowboardRepository.DeleteByIdAsync(id, token);
     }
 }
