@@ -1,52 +1,171 @@
+using Dapper;
+using SnowboardShop.Application.Database;
 using SnowboardShop.Application.Models;
 
 namespace SnowboardShop.Application.Repositories;
 
 public class SnowboardRepository : ISnowboardRepository
 {
-    /* Temporary usage of In-Memory Database before implementing a real PostgreSQL DB later in Docker.
-    Tasks are implemented to future-proof the upcoming asynchronous implementation of the real database.*/
-    private readonly List<Snowboard> _snowboards = new(); 
-    
-    public Task<bool> CreateAsync(Snowboard snowboard)
+    private readonly IDbConnectionFactory _dbConnectionFactory;
+
+    public SnowboardRepository(IDbConnectionFactory dbConnectionFactory)
     {
-        _snowboards.Add(snowboard);
-        return Task.FromResult(true);
+        _dbConnectionFactory = dbConnectionFactory;
     }
 
-    public Task<Snowboard?> GetByIdAsync(Guid id)
+    public async Task<bool> CreateAsync(Snowboard snowboard)
     {
-        var snowboard = _snowboards.SingleOrDefault(x => x.Id == id);
-        return Task.FromResult(snowboard);
-    }
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var transaction = connection.BeginTransaction();
 
-    public Task<Snowboard?> GetBySlugAsync(string slug)
-    {
-        var snowboard = _snowboards.SingleOrDefault(x => x.Slug == slug);
-        return Task.FromResult(snowboard);
-    }
-    
-    public Task<IEnumerable<Snowboard>> GetAllAsync()
-    {
-        return Task.FromResult(_snowboards.AsEnumerable());
-    }
+        var result = await connection.ExecuteAsync(new CommandDefinition("""
+                                                                         insert into snowboards (id, slug, snowboardbrand, yearofrelease) 
+                                                                         values (@Id, @Slug, @SnowboardBrand, @YearOfRelease)
+                                                                         """, snowboard));
 
-    public Task<bool> UpdateAsync(Snowboard snowboard)
-    {
-        var snowBoardIndex = _snowboards.FindIndex(x => x.Id == snowboard.Id);
-        if (snowBoardIndex == -1)
+        if (result > 0)
         {
-            return Task.FromResult(false);
+            foreach (var item in snowboard.SnowboardLineup)
+            {
+                await connection.ExecuteAsync(new CommandDefinition("""
+                                                                        insert into snowboardlineup (snowboardid, snowboardmodel) 
+                                                                        values (@SnowboardId, @SnowboardModel)
+                                                                    """,
+                    new { SnowboardId = snowboard.Id, SnowBoardModel = item }));
+            }
         }
-        
-        _snowboards[snowBoardIndex] = snowboard;
-        return Task.FromResult(true);
+
+        transaction.Commit();
+
+        return result > 0;
     }
 
-    public Task<bool> DeleteByIdAsync(Guid id)
+
+    public async Task<Snowboard?> GetByIdAsync(Guid id)
     {
-        var removedCount = _snowboards.RemoveAll(x => x.Id == id);
-        var snowboardRemoved = removedCount > 0;
-        return Task.FromResult(snowboardRemoved);
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        var snowboard = await connection.QuerySingleOrDefaultAsync<Snowboard>(
+            new CommandDefinition("""
+                                  select * from snowboards where id = @id
+                                  """, new { id }));
+
+        if (snowboard is null)
+        {
+            return null;
+        }
+
+        var snowboardLineup = await connection.QueryAsync<string>(
+            new CommandDefinition("""
+                                  select snowboardmodel from snowboardlineup where snowboardid = @id 
+                                  """, new { id }));
+
+        foreach (var item in snowboardLineup)
+        {
+            snowboard.SnowboardLineup.Add(item);
+        }
+
+        return snowboard;
+    }
+
+
+    public async Task<Snowboard?> GetBySlugAsync(string slug)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        var snowboard = await connection.QuerySingleOrDefaultAsync<Snowboard>(
+            new CommandDefinition("""
+                                  select * from snowboards where slug = @slug
+                                  """, new { slug }));
+
+        if (snowboard is null)
+        {
+            return null;
+        }
+
+        var snowboardLineup = await connection.QueryAsync<string>(new CommandDefinition("""
+            select snowboardmodel 
+            from snowboardlineup 
+            where snowboardid = @id 
+            """, new { id = snowboard.Id }));
+
+        foreach (var item in snowboardLineup)
+        {
+            snowboard.SnowboardLineup.Add(item);
+        }
+
+        return snowboard;
+    }
+
+    public async Task<IEnumerable<Snowboard>> GetAllAsync()
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        var result = await connection.QueryAsync<dynamic>(new CommandDefinition("""
+                select s.*, string_agg(sl.snowboardmodel, ',') as snowboardlineup
+                from snowboards s 
+                left join snowboardlineup sl on s.id = sl.snowboardid
+                group by s.id
+            """));
+
+        return result.Select(x => new Snowboard
+        {
+            Id = x.id,
+            SnowboardBrand = x.snowboardbrand,
+            YearOfRelease = x.yearofrelease,
+            SnowboardLineup = Enumerable.ToList(x.snowboardlineup.Split(','))
+        });
+    }
+
+
+    public async Task<bool> UpdateAsync(Snowboard snowboard)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var transaction = connection.BeginTransaction();
+
+        await connection.ExecuteAsync(
+            new CommandDefinition("""
+            delete from snowboardlineup where snowboardid = @id
+            """, new { id = snowboard.Id }));
+
+        foreach (var item in snowboard.SnowboardLineup)
+        {
+            await connection.ExecuteAsync(new CommandDefinition("""
+                                                                insert into snowboardlineup (snowboardid, snowboardmodel) 
+                                                                values (@SnowboardId, @SnowboardModel)
+                                                                """,
+                new { SnowboardId = snowboard.Id, SnowboardModel = item }));
+        }
+
+        var result = await connection.ExecuteAsync(new CommandDefinition("""
+                                                                         update snowboards set slug = @Slug, snowboardbrand = @SnowboardBrand, yearofrelease = @YearOfRelease  
+                                                                         where id = @Id
+                                                                         """, snowboard));
+
+        transaction.Commit();
+        return result > 0;
+    }
+
+
+    public async Task<bool> DeleteByIdAsync(Guid id)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using var transaction = connection.BeginTransaction();
+        
+        await connection.ExecuteAsync(new CommandDefinition("""
+                                                            delete from snowboardlineup where snowboardid = @id
+                                                            """, new { id }));
+        
+        var result = await connection.ExecuteAsync(new CommandDefinition("""
+                                                                         delete from snowboards where id = @id
+                                                                         """, new { id }));
+        
+        transaction.Commit();
+        return result > 0;
+    }
+
+    public async Task<bool> ExistsByIdAsync(Guid id)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        return await connection.ExecuteScalarAsync<bool>(new CommandDefinition("""
+                                                                               select count(1) from snowboards where id = @id
+                                                                               """, new { id }));
     }
 }

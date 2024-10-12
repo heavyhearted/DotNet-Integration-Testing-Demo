@@ -1,0 +1,18 @@
+﻿services:
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=demouser
+      - POSTGRES_PASSWORD=changeme
+      - POSTGRES_DB=snowboards
+    ports:
+      - '5432:5432'
+
+      # THE VALUES ARE HARDCODED FOR DEMONSTRATION PURPOSES ONLY
+      # In a real scenario, sensitive data such as POSTGRES_USER and POSTGRES_PASSWORD should not be hardcoded.
+      # Instead, use one of the following secure methods:
+      # - Use a `.env` file (not committed to version control) to store sensitive environment variables.
+      # - Use Docker secrets to manage sensitive information securely.
+      # - Use cloud-based secret management services such as Azure Key Vault, AWS Secrets Manager etc. 
