@@ -1,8 +1,8 @@
 using SnowboardShop.Application.Models;
 
-namespace SnowboardShop.Application.Repositories;
+namespace SnowboardShop.Application.Services;
 
-public interface ISnowboardRepository
+public interface ISnowboardService
 {
     Task<bool> CreateAsync(Snowboard snowboard, CancellationToken token = default);
     
@@ -12,9 +12,7 @@ public interface ISnowboardRepository
     
     Task<IEnumerable<Snowboard>> GetAllAsync(CancellationToken token = default);
     
-    Task<bool> UpdateAsync(Snowboard snowboard, CancellationToken token = default);
+    Task<Snowboard?> UpdateAsync(Snowboard snowboard, CancellationToken token = default);
     
     Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default);
-    
-    Task<bool> ExistsByIdAsync(Guid id, CancellationToken token = default);
 }
