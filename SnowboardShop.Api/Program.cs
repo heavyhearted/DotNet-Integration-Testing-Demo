@@ -1,3 +1,4 @@
+using SnowboardShop.Api.Mapping;
 using SnowboardShop.Application;
 using SnowboardShop.Application.Database;
 
@@ -31,6 +32,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseMiddleware<ValidationMappingMiddleware>();
 app.MapControllers();
 
 var dbInitializer = app.Services.GetRequiredService<DbInitializer>();

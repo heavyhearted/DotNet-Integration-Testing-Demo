@@ -1,8 +1,8 @@
 using SnowboardShop.Application.Models;
 
-namespace SnowboardShop.Application.Repositories;
+namespace SnowboardShop.Application.Services;
 
-public interface ISnowboardRepository
+public interface ISnowboardService
 {
     Task<bool> CreateAsync(Snowboard snowboard);
     
@@ -12,9 +12,7 @@ public interface ISnowboardRepository
     
     Task<IEnumerable<Snowboard>> GetAllAsync();
     
-    Task<bool> UpdateAsync(Snowboard snowboard);
+    Task<Snowboard?> UpdateAsync(Snowboard movie);
     
     Task<bool> DeleteByIdAsync(Guid id);
-    
-    Task<bool> ExistsByIdAsync(Guid id);
 }
