@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployments", "Deployments"
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{BC184E43-AADD-4F57-92F6-C45FFA576EF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "Helpers\Identity.Api\Identity.Api.csproj", "{559F6644-DCA1-4C23-A994-959638D2B027}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +33,12 @@ Global
 		{031802E7-745D-47AB-9F69-02D6F8497B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{031802E7-745D-47AB-9F69-02D6F8497B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{031802E7-745D-47AB-9F69-02D6F8497B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{559F6644-DCA1-4C23-A994-959638D2B027}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{559F6644-DCA1-4C23-A994-959638D2B027}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{559F6644-DCA1-4C23-A994-959638D2B027}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{559F6644-DCA1-4C23-A994-959638D2B027}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{559F6644-DCA1-4C23-A994-959638D2B027} = {BC184E43-AADD-4F57-92F6-C45FFA576EF2}
 	EndGlobalSection
 EndGlobal
