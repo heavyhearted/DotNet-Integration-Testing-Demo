@@ -1,9 +1,37 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using SnowboardShop.Api.Mapping;
 using SnowboardShop.Application;
 using SnowboardShop.Application.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
+
+/* Using a symmetric key for simplicity of the demo. In a real-world scenario, use a more secure method.
+The JWT Token is stored in appsettings.json for convenience of demo purposes.
+In a real scenario, it should be stored securely, such as in user secrets, an environment variable, or a key vault.*/
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = new SymmetricSecurityKey( 
+            Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidIssuer = config["Jwt:Issuer"],
+        ValidAudience = config["Jwt:Audience"],
+        ValidateIssuer = true,
+        ValidateAudience = true
+    };
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -30,6 +58,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<ValidationMappingMiddleware>();

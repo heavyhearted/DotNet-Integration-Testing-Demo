@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SnowboardShop.Api.Mapping;
 using SnowboardShop.Application.Repositories;
@@ -6,6 +7,7 @@ using SnowboardShop.Contracts.Requests;
 
 namespace SnowboardShop.Api.Controllers;
 
+[Authorize]
 [ApiController]
 public class SnowboardsController : ControllerBase
 {
