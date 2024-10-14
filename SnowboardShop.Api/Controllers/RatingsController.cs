@@ -23,9 +23,11 @@ public class RatingsController : ControllerBase
         [FromBody] RateSnowboardRequest request, CancellationToken token)
     {
         var userId = HttpContext.GetUserId();
-        var result = await _ratingService.RateSnowboardAsync(id, request.Rating, userId!.Value, token);
-        return result ? Ok() : NotFound();
+        return await _ratingService.RateSnowboardAsync(id, request.Rating, userId!.Value, token)
+            ? Ok(new { Message = "Rating submitted successfully", SnowboardId = id, Rating = request.Rating })
+            : NotFound(new { Message = "The requested snowboard was not found" });
     }
+
 
     [Authorize]
     [HttpDelete(ApiEndpoints.Snowboards.DeleteRating)]
@@ -33,8 +35,9 @@ public class RatingsController : ControllerBase
         CancellationToken token)
     {
         var userId = HttpContext.GetUserId();
-        var result = await _ratingService.DeleteRatingAsync(id, userId!.Value, token);
-        return result ? Ok() : NotFound();
+        return await _ratingService.DeleteRatingAsync(id, userId!.Value, token)
+            ? Ok(new { Message = "Rating deleted successfully"})
+            : NotFound(new { Message = "The requested snowboard was not found" });
     }
 
     [Authorize]
