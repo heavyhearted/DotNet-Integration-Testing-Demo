@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SnowboardShop.Api;
+using SnowboardShop.Api.Auth;
 using SnowboardShop.Api.Mapping;
 using SnowboardShop.Application;
 using SnowboardShop.Application.Database;

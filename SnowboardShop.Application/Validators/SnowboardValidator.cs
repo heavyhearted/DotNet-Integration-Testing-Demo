@@ -32,7 +32,7 @@ public class SnowboardValidator : AbstractValidator<Snowboard>
 
     private async Task<bool> ValidateSlug(Snowboard snowboard, string slug, CancellationToken token = default)
     {
-        var existingSnowboard = await _snowboardRepository.GetBySlugAsync(slug, token);
+        var existingSnowboard = await _snowboardRepository.GetBySlugAsync(slug);
 
         if (existingSnowboard is not null)
         {

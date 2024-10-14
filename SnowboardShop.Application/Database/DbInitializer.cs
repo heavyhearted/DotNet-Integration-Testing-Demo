@@ -34,5 +34,13 @@ public class DbInitializer
                                           snowboardId UUID references snowboards (Id),
                                           snowboardmodel TEXT not null);
                                       """);
+        
+        await connection.ExecuteAsync("""
+                                          create table if not exists ratings (
+                                          userid uuid,
+                                          snowboardid uuid references snowboards (id),
+                                          rating integer not null,
+                                          primary key (userid, snowboardid));
+                                      """);
     }
 }
