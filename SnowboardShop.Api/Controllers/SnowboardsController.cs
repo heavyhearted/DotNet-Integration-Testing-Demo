@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SnowboardShop.Api.Mapping;
-using SnowboardShop.Application.Repositories;
 using SnowboardShop.Application.Services;
 using SnowboardShop.Contracts.Requests;
 
 namespace SnowboardShop.Api.Controllers;
 
-[Authorize]
 [ApiController]
 public class SnowboardsController : ControllerBase
 {
@@ -18,7 +16,7 @@ public class SnowboardsController : ControllerBase
         _snowboardService = snowboardService;
     }
 
-
+    [Authorize(AuthConstants.TrustedMemberPolicyName)]
     [HttpPost(ApiEndpoints.Snowboards.Create)]
     public async Task<IActionResult> Create([FromBody] CreateSnowboardRequest request, CancellationToken token)
     {
@@ -57,6 +55,7 @@ public class SnowboardsController : ControllerBase
         return Ok(snowboardsResponse);
     }
     
+    [Authorize(AuthConstants.TrustedMemberPolicyName)]
     [HttpPut(ApiEndpoints.Snowboards.Update)]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateSnowboardRequest request, CancellationToken token)
     {
@@ -71,6 +70,7 @@ public class SnowboardsController : ControllerBase
         return Ok(response);
     }
     
+    [Authorize(AuthConstants.AdminUserPolicyName)]
     [HttpDelete(ApiEndpoints.Snowboards.Delete)]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
     {

@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using SnowboardShop.Api;
 using SnowboardShop.Api.Mapping;
 using SnowboardShop.Application;
 using SnowboardShop.Application.Database;
@@ -31,7 +32,16 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(x =>
+{
+    x.AddPolicy(AuthConstants.AdminUserPolicyName, 
+        p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+    
+    x.AddPolicy(AuthConstants.TrustedMemberPolicyName,
+        p => p.RequireAssertion(c => 
+            c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) || 
+            c.User.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })));
+});
 
 builder.Services.AddControllers();
 
