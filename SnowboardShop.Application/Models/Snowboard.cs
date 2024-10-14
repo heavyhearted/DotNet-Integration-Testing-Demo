@@ -9,7 +9,10 @@ public partial class Snowboard
     public required string SnowboardBrand { get; set; }
     
     public string Slug => GenerateSlug();
-
+    
+    public float? Rating { get; set; }
+    
+    public int? UserRating { get; set; }
     
     public required int YearOfRelease { get; set; }
     

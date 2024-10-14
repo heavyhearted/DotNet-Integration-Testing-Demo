@@ -1,4 +1,4 @@
-namespace SnowboardShop.Api;
+namespace SnowboardShop.Api.Auth;
 
 public static class AuthConstants
 {

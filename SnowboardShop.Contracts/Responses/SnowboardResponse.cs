@@ -7,6 +7,10 @@ public class SnowboardResponse
     public required string SnowboardBrand { get; init; }
     
     public required string Slug { get; init; }
+    
+    public float? Rating { get; init; }
+    
+    public int? UserRating { get; init; }
 
     public required int YearOfRelease { get; init; }
 

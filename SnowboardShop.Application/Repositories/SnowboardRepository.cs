@@ -41,13 +41,19 @@ public class SnowboardRepository : ISnowboardRepository
     }
 
 
-    public async Task<Snowboard?> GetByIdAsync(Guid id, CancellationToken token = default)
+    public async Task<Snowboard?> GetByIdAsync(Guid id, Guid? userId = default, CancellationToken token = default)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         var snowboard = await connection.QuerySingleOrDefaultAsync<Snowboard>(
             new CommandDefinition("""
-                                  select * from snowboards where id = @id
-                                  """, new { id }, cancellationToken: token));
+                                  select s.*, round(avg(r.rating), 1) as rating, myr.rating as userrating 
+                                  from snowboards s
+                                  left join ratings r on s.id = r.snowboardid
+                                  left join ratings myr on s.id = myr.snowboardid
+                                  and myr.userid = @userId
+                                  where id = @id
+                                  group by id, userrating
+                                  """, new { id, userId }, cancellationToken: token));
 
         if (snowboard is null)
         {
@@ -68,13 +74,19 @@ public class SnowboardRepository : ISnowboardRepository
     }
 
 
-    public async Task<Snowboard?> GetBySlugAsync(string slug, CancellationToken token = default)
+    public async Task<Snowboard?> GetBySlugAsync(string slug, Guid? userId = default, CancellationToken token = default)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         var snowboard = await connection.QuerySingleOrDefaultAsync<Snowboard>(
             new CommandDefinition("""
-                                  select * from snowboards where slug = @slug
-                                  """, new { slug }, cancellationToken: token));
+                                  select s.*, round(avg(r.rating), 1) as rating, myr.rating as userrating 
+                                  from snowboards s
+                                  left join ratings r on s.id = r.snowboardid
+                                  left join ratings myr on s.id = myr.snowboardid
+                                  and myr.userid = @userId
+                                  where slug = @slug
+                                  group by id, userrating
+                                  """, new { slug, userId }, cancellationToken: token));
 
         if (snowboard is null)
         {
@@ -95,21 +107,29 @@ public class SnowboardRepository : ISnowboardRepository
         return snowboard;
     }
 
-    public async Task<IEnumerable<Snowboard>> GetAllAsync(CancellationToken token = default)
+    public async Task<IEnumerable<Snowboard>> GetAllAsync(Guid? userId = default, CancellationToken token = default)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
         var result = await connection.QueryAsync<dynamic>(new CommandDefinition("""
-                select s.*, string_agg(sl.snowboardmodel, ',') as snowboardlineup
+                select s.*, 
+                       string_agg(distinct sl.snowboardmodel, ',') as snowboardlineup, 
+                       round(avg(r.rating), 1) as rating, 
+                       myr.rating as userrating
                 from snowboards s 
                 left join snowboardlineup sl on s.id = sl.snowboardid
-                group by s.id
-            """, cancellationToken: token));
+                left join ratings r on s.id = r.snowboardid
+                left join ratings myr on s.id = myr.snowboardid
+                and myr.userid = @userId
+                group by id, userrating
+            """, new { userId }, cancellationToken: token));
 
         return result.Select(x => new Snowboard
         {
             Id = x.id,
             SnowboardBrand = x.snowboardbrand,
             YearOfRelease = x.yearofrelease,
+            Rating = (float?)x.rating,
+            UserRating = (int?)x.userrating,
             SnowboardLineup = Enumerable.ToList(x.snowboardlineup.Split(','))
         });
     }
