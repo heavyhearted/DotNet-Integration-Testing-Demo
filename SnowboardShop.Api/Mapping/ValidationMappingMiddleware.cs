@@ -20,7 +20,7 @@ public class ValidationMappingMiddleware
         }
         catch (ValidationException ex)
         {
-            context.Response.StatusCode = 400;
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
             var validationFailureResponse = new ValidationFailureResponse
             {
                 Errors = ex.Errors.Select(x => new ValidationResponse
