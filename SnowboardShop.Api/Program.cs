@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SnowboardShop.Api;
 using SnowboardShop.Api.Auth;
+using SnowboardShop.Api.Health;
 using SnowboardShop.Api.Mapping;
 using SnowboardShop.Application;
 using SnowboardShop.Application.Database;
@@ -46,6 +47,9 @@ builder.Services.AddAuthorization(x =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -53,8 +57,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
 
-/* The Database Connection String is stored in appsettings.json for convenience of demo purposes.
-In a real scenario, it should be stored securely, such as in user secrets, an environment variable, or a key vault.*/
 builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
 var app = builder.Build();
@@ -66,6 +68,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapHealthChecks("_health");
 
 app.UseHttpsRedirection();
 
