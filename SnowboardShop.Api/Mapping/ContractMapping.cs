@@ -47,6 +47,16 @@ public static class ContractMapping
             Items = snowboards.Select(MapToResponse)
         };
     }
+    
+    public static IEnumerable<SnowboardRatingResponse> MapToResponse(this IEnumerable<SnowboardRating> ratings)
+    {
+        return ratings.Select(x => new SnowboardRatingResponse
+        {
+            Rating = x.Rating,
+            Slug = x.Slug,
+            SnowboardId = x.SnowboardId
+        });
+    }
 }
 
 

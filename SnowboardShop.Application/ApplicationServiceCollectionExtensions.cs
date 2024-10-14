@@ -11,8 +11,11 @@ public static class ApplicationServiceCollectionExtensions
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddSingleton<ISnowboardRepository, SnowboardRepository>();
-        services.AddSingleton<IRatingRepository, RatingRepository>();
         services.AddSingleton<ISnowboardService, SnowboardService>();
+        
+        services.AddSingleton<IRatingRepository, RatingRepository>();
+        services.AddSingleton<IRatingService, RatingService>();
+        
         services.AddValidatorsFromAssemblyContaining<IApplicationMarker>(ServiceLifetime.Singleton);
 
         return services;
