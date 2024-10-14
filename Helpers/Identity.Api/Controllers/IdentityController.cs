@@ -6,14 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Identity.Api.Controllers;
-/* This class is a demonstration helper for generating JSON Web Tokens (JWTs).
-It uses a symmetric key stored in code for simplicity, which should not be done in a real-world scenario.
-Store secrets securely using environment variables or a secrets manager/vault.*/
 
 [ApiController]
 public class IdentityController : ControllerBase
 {
-    private const string TokenSecret = "DemoPurposesOnlyThisMustBeStoredSecurelyInTheRealWorld";
+    /* This class is a demonstration helper for generating JSON Web Tokens (JWTs).
+     It uses a symmetric key stored in code for demo purpose simplicity, which must not be done in a real-world scenario.
+     Store secrets securely using environment variables or a secrets manager, or a vault.
+     */
+    private const string TokenSecret = "DemoPurposesOnlyThisMustBeStoredSecurelyInTheRealWorldForExampleInUserSecretOrEnvironmentVariableOrKeyVault";
     private static readonly TimeSpan TokenLifetime = TimeSpan.FromHours(8);
 
     [HttpPost("token")]
@@ -50,8 +51,8 @@ public class IdentityController : ControllerBase
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.Add(TokenLifetime),
-            Issuer = "https://id.dessytests.com",
-            Audience = "https://snowboardshop-dessytestdemo.com",
+            Issuer = "https://id.dessy-snowboardshop.com",
+            Audience = "https://api.snowboardshop.com",
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         
