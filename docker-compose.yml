@@ -1,5 +1,11 @@
-﻿services:
+﻿# THE VALUES ARE HARDCODED FOR DEMONSTRATION PURPOSES ONLY and ease of running the demo framework.
+# In a real scenario, sensitive data such as POSTGRES_USER/POSTGRES_PASSWORD/Certificates/Connection String must not be hardcoded.
+# Instead, use one of the following secure methods:
+# - Use a `.env` file (not committed to version control) to store sensitive environment variables.
+# - Use Docker secrets to manage sensitive information securely.
+# - Use cloud-based secret management services such as Azure Key Vault, AWS Secrets Manager etc. 
 
+services:
   db:
     image: postgres:latest
     restart: always
@@ -10,9 +16,18 @@
     ports:
       - '5432:5432'
 
-      # THE VALUES ARE HARDCODED FOR DEMONSTRATION PURPOSES ONLY
-      # In a real scenario, sensitive data such as POSTGRES_USER and POSTGRES_PASSWORD should not be hardcoded.
-      # Instead, use one of the following secure methods:
-      # - Use a `.env` file (not committed to version control) to store sensitive environment variables.
-      # - Use Docker secrets to manage sensitive information securely.
-      # - Use cloud-based secret management services such as Azure Key Vault, AWS Secrets Manager etc. 
+  identity-api:
+    build:
+      context: ./Helpers/Identity.Api
+      dockerfile: Dockerfile
+    ports:
+      - '5002:5002'
+      - '5003:5003'
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:5003;http://+:5002
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=snowboards;Username=demouser;Password=changeme
+    depends_on:
+      - db
