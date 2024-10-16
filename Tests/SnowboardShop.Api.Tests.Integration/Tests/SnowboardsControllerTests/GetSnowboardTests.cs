@@ -1,42 +1,47 @@
 using System.Net;
 using FluentAssertions;
-using SnowboardShop.Api.Tests.Integration.TestData.SnowboardsControllerTestData;
+using RestSharp;
+using SnowboardShop.Api.Tests.Integration.Core.Factories;
+using SnowboardShop.Api.Tests.Integration.TestData;
+using Xunit.Abstractions;
 
 namespace SnowboardShop.Api.Tests.Integration.Tests.SnowboardsControllerTests;
 
-public class GetSnowboardTests : IAsyncLifetime
+public class GetSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncLifetime
 {
-    private readonly HttpClient _httpClient = new()
-    {
-        BaseAddress = new Uri("https://localhost:7001/api/")
-    };
-    
-    public GetSnowboardTests()
-    {
+    private const string GetSnowboardEndpoint = ApiEndpoints.Snowboards.Get;
 
+    private readonly ITestOutputHelper _output;
+    private readonly SnowboardsApiFactory _apiFactory;
+
+    public GetSnowboardTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    {
+        _apiFactory = apiFactory;
+        _output = output;
     }
 
-    public async Task InitializeAsync()
+    public Task InitializeAsync()
     {
-        await Task.Delay(500);
+        return Task.CompletedTask;
     }
 
-    
+    public Task DisposeAsync()
+    {
+        return Task.CompletedTask;
+    }
+
+
     [Theory]
     [ClassData(typeof(InvalidSnowboardGuidTheoryData))]
     public async Task Get_ReturnsNotFound_WhenSnowboardDoesNotExist(string guidAsText)
     {
-        var snowboardId = Guid.Parse(guidAsText);
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
 
-        var response = await _httpClient.GetAsync($"snowboards/{snowboardId}");
+        var request = new RestRequest(GetSnowboardEndpoint);
+        request.AddUrlSegment("idOrSlug", guidAsText);
         
+        var response = await restClient.ExecuteGetAsync(request);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-
-
-    public async Task DisposeAsync()
-    {
-        await Task.Delay(500);
     }
 }

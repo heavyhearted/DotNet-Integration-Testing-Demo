@@ -6,10 +6,8 @@ namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataFakers;
 public class CreateSnowboardFaker : Faker<CreateSnowboardRequest>
 {
     private readonly Faker<CreateSnowboardRequest> _snowboardRequestGenerator = new Faker<CreateSnowboardRequest>()
-        .RuleFor(x => x.SnowboardBrand, f 
-            => f.PickRandom(ValidSnowboardBrands) + " " + f.Random.Int(1, 99))
-        .RuleFor(x 
-            => x.YearOfRelease, f => f.Random.Int(1965, DateTime.Now.Year + 1)) 
+        .RuleFor(x => x.SnowboardBrand, f => f.PickRandom(ValidSnowboardBrands))
+        .RuleFor(x => x.YearOfRelease, f => f.Random.Int(1965, DateTime.Now.Year + 1)) 
         .RuleFor(x => x.SnowboardLineup, f 
             => f.Make(f.Random.Int(1, 5), ()
             => f.PickRandom(SnowboardLineupList) + " " +

@@ -1,12 +1,9 @@
 using System.Net;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
 using SnowboardShop.Api.Controllers;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
-using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
-using SnowboardShop.Api.Tests.Integration.TestData.SnowboardsControllerTestData;
-using SnowboardShop.Api.Tests.Integration.TestUtilities.Logging;
+using SnowboardShop.Api.Tests.Integration.TestData;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataFakers;
 using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;
@@ -39,7 +36,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     }
 
     [Theory]
-    [ClassData(typeof(SnowboardsValidTestData))]
+    [ClassData(typeof(SnowboardsTestTheories))]
     public async Task CreateSnowboardRequest_ShouldSucceed(CreateSnowboardRequest snowboardRequest)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
@@ -50,8 +47,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
         
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        
-        // TestLogger.LogRequestResponse(_output, request, response);
     }
     
     [Fact(DisplayName = $"{nameof(SnowboardsController.Create)} Invalid authentication should return HTTP 401 Unauthorized")]
@@ -64,8 +59,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
         
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
-        
-        TestLogger.LogRequestResponse(_output, request, response);
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized); 
     }
 }

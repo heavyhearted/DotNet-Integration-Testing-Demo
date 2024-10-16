@@ -4,13 +4,13 @@ using RestSharp;
 
 namespace SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 
-public class TokenService : ITokenService
+public class AccessTokenService : IAccessTokenService
 {
     private readonly RestClient _restClient;
     private const string BaseUrl = "https://localhost:5003";
 
 
-    public TokenService()
+    public AccessTokenService()
     {
         var options = new RestClientOptions(BaseUrl)
         {
@@ -22,7 +22,7 @@ public class TokenService : ITokenService
     public async Task<string> GetTokenAsync()
     {
         var request = new RestRequest("/token", Method.Post);
-        request.AddJsonBody(new TokenGenerationRequest
+        request.AddJsonBody(new AccessTokenGenerationRequest
         {
             UserId = Guid.NewGuid(),
             Email = "dessy.tests@snowboardshop.com",

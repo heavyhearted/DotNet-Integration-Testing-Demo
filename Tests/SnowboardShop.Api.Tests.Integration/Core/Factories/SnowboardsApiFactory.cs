@@ -15,7 +15,7 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
     {
         builder.ConfigureTestServices(services =>
         {
-            services.AddSingleton<ITokenService, TokenService>();
+            services.AddSingleton<IAccessTokenService, AccessTokenService>();
         });
     }
 
@@ -49,7 +49,7 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
     public async Task<RestClient> CreateAuthenticatedRestClientAsync(ITestOutputHelper? testOutputHelper = default)
     {
         var client = CreateRestClient(testOutputHelper);
-        var tokenService = Services.GetRequiredService<ITokenService>();
+        var tokenService = Services.GetRequiredService<IAccessTokenService>();
         var token = await tokenService.GetTokenAsync();
         client.AddDefaultHeader("Authorization", $"Bearer {token}");
 
