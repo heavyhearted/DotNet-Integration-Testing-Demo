@@ -1,0 +1,595 @@
+[
+  {
+    "SnowboardBrand": "Burton",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Custom",
+      "Process",
+      "Deep Thinker",
+      "Family Tree Hometown Hero",
+      "Kilroy Twin",
+      "Flight Attendant",
+      "Free Thinker",
+      "Name Dropper"
+    ]
+  },
+  {
+    "SnowboardBrand": "Burton",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Custom X",
+      "Process Flying V",
+      "Deep Thinker",
+      "Family Tree Hometown Hero",
+      "Kilroy 3D",
+      "Flight Attendant",
+      "Free Thinker",
+      "Name Dropper"
+    ]
+  },
+  {
+    "SnowboardBrand": "Burton",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Custom X",
+      "Process Flying V",
+      "Deep Thinker",
+      "Family Tree Territory Manager",
+      "Kilroy Twin",
+      "Flight Attendant Split",
+      "Family Tree Big Gulp",
+      "Name Dropper Pro"
+    ]
+  },
+  {
+    "SnowboardBrand": "Never Summer",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Proto Slinger",
+      "West Bound",
+      "Harpoon",
+      "Maverix",
+      "Swift",
+      "Shaper Twin",
+      "Big Gun"
+    ]
+  },
+  {
+    "SnowboardBrand": "Never Summer",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Proto Synthesis",
+      "West Bound",
+      "Harpoon",
+      "Maverix",
+      "Swift",
+      "Shaper Twin",
+      "Insta/Gator"
+    ]
+  },
+  {
+    "SnowboardBrand": "Never Summer",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Proto Ultra",
+      "West Bound X",
+      "Swift High Performance",
+      "Shaper Series Maverix",
+      "Harpoon Carbon Edition",
+      "Eagle Ripper",
+      "Legendary Heritage"
+    ]
+  },
+  {
+    "SnowboardBrand": "CAPiTA",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Defenders of Awesome",
+      "Black Snowboard of Death",
+      "Super DOA",
+      "Mercury",
+      "Paradise",
+      "Birds of a Feather",
+      "The Outsiders"
+    ]
+  },
+  {
+    "SnowboardBrand": "CAPiTA",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Defenders of Awesome",
+      "Black Snowboard of Death",
+      "Super DOA",
+      "Mercury",
+      "Paradise",
+      "Birds of a Feather",
+      "The Outsiders"
+    ]
+  },
+  {
+    "SnowboardBrand": "CAPiTA",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Super DOA V2",
+      "Mercury II",
+      "The Equalizer",
+      "Mega Merc",
+      "Black Snowboard of Death 2.0",
+      "Ultrafear",
+      "Paradise Ultra"
+    ]
+  },
+  {
+    "SnowboardBrand": "GNU",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Riders Choice",
+      "Gremlin",
+      "Head Space",
+      "Mullair",
+      "Money",
+      "Ravish",
+      "Barrett"
+    ]
+  },
+  {
+    "SnowboardBrand": "GNU",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Riders Choice",
+      "Gremlin",
+      "Head Space",
+      "Mullair",
+      "Money",
+      "Banked Country",
+      "Hyak"
+    ]
+  },
+  {
+    "SnowboardBrand": "GNU",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Riders Choice Pro",
+      "Billy Goat",
+      "Hyak 2.0",
+      "Mullair LTD",
+      "Money Pro",
+      "Space Case",
+      "Air Blaster"
+    ]
+  },
+  {
+    "SnowboardBrand": "Salomon",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Assassin",
+      "Huck Knife",
+      "Dancehaul",
+      "Super 8",
+      "Craft",
+      "Pulse",
+      "Sleepwalker"
+    ]
+  },
+  {
+    "SnowboardBrand": "Salomon",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Assassin Pro",
+      "Huck Knife",
+      "Dancehaul",
+      "Super 8",
+      "Craft",
+      "Pulse",
+      "Sleepwalker"
+    ]
+  },
+  {
+    "SnowboardBrand": "Salomon",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Assassin LTD",
+      "Huck Knife Pro",
+      "Dancehaul Classic",
+      "Super 8 Split",
+      "Craft LTD",
+      "Pulse X",
+      "Sleepwalker Advanced"
+    ]
+  },
+  {
+    "SnowboardBrand": "Lib Tech",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "T.Rice Pro",
+      "Skate Banana",
+      "Orca",
+      "Cold Brew",
+      "Box Scratcher",
+      "Lost Retro Ripper",
+      "Dynamiss"
+    ]
+  },
+  {
+    "SnowboardBrand": "Lib Tech",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "T.Rice Pro",
+      "Skate Banana",
+      "Orca",
+      "Golden Orca",
+      "Cold Brew",
+      "Box Scratcher",
+      "Lost Retro Ripper"
+    ]
+  },
+  {
+    "SnowboardBrand": "Lib Tech",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "T.Rice Gold Edition",
+      "Skate Banana X",
+      "Orca LTD",
+      "Golden Orca Ultra",
+      "Cold Brew Classic",
+      "Box Knife Pro",
+      "Rocket Fish"
+    ]
+  },
+  {
+    "SnowboardBrand": "Roxy",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "XOXO",
+      "Smoothie",
+      "Raina",
+      "Glitter",
+      "Sugar",
+      "Sweetheart"
+    ]
+  },
+  {
+    "SnowboardBrand": "Roxy",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "XOXO",
+      "Smoothie",
+      "Raina",
+      "Tropicale",
+      "Glitter",
+      "Sugar"
+    ]
+  },
+  {
+    "SnowboardBrand": "Roxy",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "XOXO Pro",
+      "Smoothie LTD",
+      "Raina X",
+      "Tropicale Ultra",
+      "Gold Glitter",
+      "Sugar Boost"
+    ]
+  },
+  {
+    "SnowboardBrand": "Bataleon",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Goliath",
+      "Evil Twin",
+      "Fun.Kink",
+      "Magic Carpet",
+      "Party Wave",
+      "Camel Toe"
+    ]
+  },
+  {
+    "SnowboardBrand": "Bataleon",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Goliath",
+      "Evil Twin",
+      "Fun.Kink",
+      "Magic Carpet",
+      "Party Wave",
+      "Camel Two"
+    ]
+  },
+  {
+    "SnowboardBrand": "Bataleon",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Goliath Carbon",
+      "Evil Twin Pro",
+      "Party Wave Twin",
+      "Magic Carpet Elite",
+      "Camel Two LTD"
+    ]
+  },
+  {
+    "SnowboardBrand": "Nitro",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Team",
+      "Beast",
+      "Squash",
+      "Fusion",
+      "Prime",
+      "Cinema",
+      "Drop"
+    ]
+  },
+  {
+    "SnowboardBrand": "Nitro",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Team",
+      "Beast",
+      "Squash",
+      "Fusion",
+      "Prime",
+      "Cinema",
+      "Drop"
+    ]
+  },
+  {
+    "SnowboardBrand": "Nitro",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Team Ultra",
+      "Beast Pro",
+      "Squash Split",
+      "Fusion Carbon",
+      "Prime X",
+      "Cinema Plus",
+      "Drop LTD"
+    ]
+  },
+  {
+    "SnowboardBrand": "Rossignol",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "XV",
+      "One LF",
+      "Resurgence",
+      "Templar",
+      "Circuit",
+      "Juggernaut"
+    ]
+  },
+  {
+    "SnowboardBrand": "Rossignol",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "XV",
+      "One LF",
+      "Resurgence",
+      "Templar",
+      "Circuit",
+      "Juggernaut"
+    ]
+  },
+  {
+    "SnowboardBrand": "Rossignol",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "XV MagTek",
+      "One LF X",
+      "Resurgence LTD",
+      "Templar Plus",
+      "Circuit Boost",
+      "Juggernaut Pro"
+    ]
+  },
+  {
+    "SnowboardBrand": "Nidecker",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Escape",
+      "Megalight",
+      "Score",
+      "Rave",
+      "Tracer",
+      "Mosquito"
+    ]
+  },
+  {
+    "SnowboardBrand": "Nidecker",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Escape",
+      "Megalight",
+      "Score",
+      "Rave",
+      "Tracer",
+      "Mosquito"
+    ]
+  },
+  {
+    "SnowboardBrand": "Nidecker",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Escape Plus",
+      "Megalight LTD",
+      "Score Carbon",
+      "Rave Ultra",
+      "Tracer Pro",
+      "Mosquito X"
+    ]
+  },
+  {
+    "SnowboardBrand": "K2",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Alchemy",
+      "Broadcast",
+      "Manifest",
+      "Party Platter",
+      "Raygun",
+      "Afterblack"
+    ]
+  },
+  {
+    "SnowboardBrand": "K2",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Alchemy",
+      "Broadcast",
+      "Manifest",
+      "Party Platter",
+      "Raygun",
+      "Afterblack"
+    ]
+  },
+  {
+    "SnowboardBrand": "K2",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Alchemy Elite",
+      "Broadcast X",
+      "Manifest LTD",
+      "Party Platter Plus",
+      "Raygun Boost",
+      "Afterblack Pro"
+    ]
+  },
+  {
+    "SnowboardBrand": "Whitespace",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "All-Mountain Directional",
+      "Freestyle Twin",
+      "Powder Slayer",
+      "Splitboard Classic"
+    ]
+  },
+  {
+    "SnowboardBrand": "Whitespace",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "All-Mountain Directional",
+      "Freestyle Twin",
+      "Powder Slayer",
+      "Splitboard Classic"
+    ]
+  },
+  {
+    "SnowboardBrand": "Whitespace",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "All-Mountain LTD",
+      "Freestyle Pro",
+      "Powder Slayer X",
+      "Splitboard Elite"
+    ]
+  },
+  {
+    "SnowboardBrand": "Jones",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Mountain Twin",
+      "Flagship",
+      "Stratos",
+      "Aviator 2.0",
+      "Mind Expander",
+      "Ultra Mountain Twin",
+      "Explorer"
+    ]
+  },
+  {
+    "SnowboardBrand": "Jones",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Mountain Twin",
+      "Flagship",
+      "Stratos",
+      "Aviator 2.0",
+      "Mind Expander",
+      "Ultra Mountain Twin",
+      "Explorer"
+    ]
+  },
+  {
+    "SnowboardBrand": "Jones",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Mountain Twin Pro",
+      "Flagship LTD",
+      "Stratos Elite",
+      "Aviator 3.0",
+      "Mind Expander Ultra",
+      "Ultra Mountain Twin X",
+      "Explorer Split"
+    ]
+  },
+  {
+    "SnowboardBrand": "Rome",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Stale Crewzer",
+      "Warden",
+      "Ravine",
+      "Agent",
+      "Mechanic",
+      "Heist"
+    ]
+  },
+  {
+    "SnowboardBrand": "Rome",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Stale Crewzer",
+      "Warden",
+      "Ravine",
+      "Agent",
+      "Mechanic",
+      "Heist"
+    ]
+  },
+  {
+    "SnowboardBrand": "Rome",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Stale Crewzer Pro",
+      "Warden X",
+      "Ravine LTD",
+      "Agent Elite",
+      "Mechanic Plus",
+      "Heist Pro"
+    ]
+  },
+  {
+    "SnowboardBrand": "Flow",
+    "YearOfRelease": 2023,
+    "SnowboardLineup": [
+      "Maverick",
+      "Viper",
+      "Enigma",
+      "Merc",
+      "Velvet"
+    ]
+  },
+  {
+    "SnowboardBrand": "Flow",
+    "YearOfRelease": 2024,
+    "SnowboardLineup": [
+      "Maverick",
+      "Viper",
+      "Enigma",
+      "Merc",
+      "Velvet"
+    ]
+  },
+  {
+    "SnowboardBrand": "Flow",
+    "YearOfRelease": 2025,
+    "SnowboardLineup": [
+      "Maverick LTD",
+      "Viper X",
+      "Enigma Pro",
+      "Merc Carbon",
+      "Velvet Boost"
+    ]
+  }
+]

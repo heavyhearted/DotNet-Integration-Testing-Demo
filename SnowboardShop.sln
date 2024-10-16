@@ -12,8 +12,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deployments", "Deployments"
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{BC184E43-AADD-4F57-92F6-C45FFA576EF2}"
+	ProjectSection(SolutionItems) = preProject
+		Helpers\snowboard_testdata.json = Helpers\snowboard_testdata.json
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "Helpers\Identity.Api\Identity.Api.csproj", "{559F6644-DCA1-4C23-A994-959638D2B027}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1F93A97B-36D7-4FEA-954B-58AF34A628CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowboardShop.Api.Tests.Integration", "Tests\SnowboardShop.Api.Tests.Integration\SnowboardShop.Api.Tests.Integration.csproj", "{97181C90-452F-4BA8-880D-564FDDDA6FAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,8 +44,13 @@ Global
 		{559F6644-DCA1-4C23-A994-959638D2B027}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{559F6644-DCA1-4C23-A994-959638D2B027}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{559F6644-DCA1-4C23-A994-959638D2B027}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97181C90-452F-4BA8-880D-564FDDDA6FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97181C90-452F-4BA8-880D-564FDDDA6FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97181C90-452F-4BA8-880D-564FDDDA6FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97181C90-452F-4BA8-880D-564FDDDA6FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{559F6644-DCA1-4C23-A994-959638D2B027} = {BC184E43-AADD-4F57-92F6-C45FFA576EF2}
+		{97181C90-452F-4BA8-880D-564FDDDA6FAE} = {1F93A97B-36D7-4FEA-954B-58AF34A628CB}
 	EndGlobalSection
 EndGlobal

@@ -7,6 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Identity.Api.Controllers;
 
+public class IdentityServiceResponse
+{
+    public string AccessToken { get; set; }
+}
+
 [ApiController]
 public class IdentityController : ControllerBase
 {
@@ -59,6 +64,12 @@ public class IdentityController : ControllerBase
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         var jwt = tokenHandler.WriteToken(token);
-        return Ok(jwt);
+        
+        var response = new IdentityServiceResponse
+        {
+            AccessToken = jwt
+        };
+        
+        return Ok(response);
     }
 }
