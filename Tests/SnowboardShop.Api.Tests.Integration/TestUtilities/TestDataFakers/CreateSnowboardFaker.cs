@@ -5,13 +5,41 @@ namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataFakers;
 
 public class CreateSnowboardFaker : Faker<CreateSnowboardRequest>
 {
-    private readonly Faker<CreateSnowboardRequest> _snowboardRequestGenerator = new Faker<CreateSnowboardRequest>()
-        .RuleFor(x => x.SnowboardBrand, f => f.PickRandom(ValidSnowboardBrands))
-        .RuleFor(x => x.YearOfRelease, f => f.Random.Int(1965, DateTime.Now.Year + 1)) 
-        .RuleFor(x => x.SnowboardLineup, f 
-            => f.Make(f.Random.Int(1, 5), ()
-            => f.PickRandom(SnowboardLineupList) + " " +
-               f.PickRandom("Edition", "Series", "Shredder", "Charger", "Ripper", "Powder Slayer")));
+    private readonly Faker<CreateSnowboardRequest> _snowboardRequestGenerator;
+    
+    private readonly HashSet<(string Brand, int Year)> _existingPairs = new();
+
+    public CreateSnowboardFaker()
+    {
+        _snowboardRequestGenerator = new Faker<CreateSnowboardRequest>()
+            .CustomInstantiator(f =>
+            {
+                string brand;
+                int year;
+
+                // Ensure unique SnowboardBrand and YearOfRelease pairs
+                do
+                {
+                    // Generate a new SnowboardBrand and YearOfRelease
+                    brand = f.PickRandom(ValidSnowboardBrands);
+                    year = f.Random.Int(1965, DateTime.Now.Year + 1);
+                } 
+                // Continue generating until a unique pair is found
+                while (_existingPairs.Contains((brand, year)));
+
+                // Add the new unique pair to the HashSet
+                _existingPairs.Add((brand, year));
+
+                // Return the generated snowboard request
+                return new CreateSnowboardRequest
+                {
+                    SnowboardBrand = brand,
+                    YearOfRelease = year,
+                    SnowboardLineup = f.Make(f.Random.Int(1, 5), () =>
+                        f.PickRandom(SnowboardLineupList))
+                };
+            });
+    }
 
     public CreateSnowboardRequest Generate() => _snowboardRequestGenerator.Generate();
 
@@ -29,6 +57,6 @@ public class CreateSnowboardFaker : Faker<CreateSnowboardRequest>
         "Mercury", "Paradise", "Birds of a Feather", "The Outsiders", "Riders Choice", "Gremlin",
         "Head Space", "Mullair", "Money", "Ravish", "Barrett", "Assassin", "Huck Knife", "Dancehaul",
         "Super 8", "Craft", "Pulse", "Sleepwalker", "T.Rice Pro", "Skate Banana", "Orca", "Cold Brew",
-        "Box Scratcher", "Lost Retro Ripper", "Dynamiss"
+        "Box Scratcher", "Lost Retro Ripper", "Dynamiss", "Shredder", "Charger", "Ripper", "Powder Slayer"
     };
 }

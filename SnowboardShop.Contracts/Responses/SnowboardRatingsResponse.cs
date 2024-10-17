@@ -2,13 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace SnowboardShop.Contracts.Responses;
 
-public class SnowboardRatingResponse
+public class SnowboardRatingsResponse
 {
-    [JsonPropertyName("message")]
-    public required string Message { get; init; }
-    
     [JsonPropertyName("snowboardId")]
     public required Guid SnowboardId { get; init; }
+    
+    [JsonPropertyName("slug")]
+    public required string Slug { get; init; }
     
     [JsonPropertyName("rating")]
     public required int Rating { get; init; }
