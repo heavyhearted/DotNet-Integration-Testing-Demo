@@ -57,7 +57,8 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     }
 
     [Theory]
-    [ClassData(typeof(SnowboardsTestTheories))]
+    [DisplayName("Create Snowboard Should Succeed")]
+    [ClassData(typeof(CreateSnowboardTheoryData))]
     public async Task CreateSnowboard_ShouldSucceed(CreateSnowboardRequest snowboardRequest)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
@@ -71,8 +72,9 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         _createdIds.Add(response.Data!.Id);
     }
-    
+
     [Fact]
+    [DisplayName("Create Snowboard Without Authentication Should Return Unauthorized")]
     public async Task CreateSnowboard_MissingAuthentication_ShouldReturnUnauthorized()
     {
         var restClient = _apiFactory.CreateRestClient(_output);
@@ -83,9 +85,10 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
-    
+
 
     [Fact]
+    [DisplayName("Create Snowboard With Invalid Authentication Should Return Unauthorized")]
     public async Task CreateSnowboard_InvalidAuthentication_ShouldReturnUnauthorized()
     {
         var restClient = _apiFactory.CreateRestClient("invalid_token");
@@ -99,14 +102,14 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
 
     [Fact]
-    [DisplayName("Create Duplicate Snowboard Attempt Should Fail On Second Request Submission")]
-    public async Task CreateDuplicateSnowboardAttempt_ShouldFail_OnSecondRequestSubmission()
+    [DisplayName("Create Duplicate Snowboard Attempt Should Return BadRequest")]
+    public async Task CreateDuplicateSnowboardAttempt_SecondRequestSubmission_ShouldReturnBadRequest()
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         var faker = new CreateSnowboardFaker();
         var snowboardRequest = faker.Generate();
 
-        
+
         var firstRequest = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         firstRequest.AddJsonBody(snowboardRequest);
 
@@ -114,7 +117,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         firstResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        
+
         var secondRequest = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         secondRequest.AddJsonBody(snowboardRequest);
 
@@ -123,7 +126,68 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         secondResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var errorResponse = JsonSerializer.Deserialize<ValidationFailureResponse>(secondResponse.Content!);
         errorResponse.Should().NotBeNull();
-        errorResponse!.Errors.Should().Contain(e => e.PropertyName == "Slug" 
-                      && e.Message == "This Snowboard Collection already exists in the system.");
+        errorResponse!.Errors.Should().Contain(e => e.PropertyName == "Slug"
+                                                    && e.Message ==
+                                                    "This Snowboard Collection already exists in the system.");
     }
+
+
+    [Theory]
+    [DisplayName("Create Snowboard With Missing Required Fields Should Return BadRequest")]
+    [ClassData(typeof(MissingSnowboardProperties))]
+    public async Task CreateSnowboard_MissingRequiredFields_ShouldReturnBadRequest(string jsonPayload)
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddStringBody(jsonPayload, DataFormat.Json);
+
+        var response = await restClient.ExecutePostAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    [DisplayName("Create Snowboard With Empty Payload Should Return BadRequest")]
+    public async Task CreateSnowboard_EmptyPayload_ShouldReturnBadRequest()
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddJsonBody(new { });
+
+        var response = await restClient.ExecutePostAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+
+    [Theory]
+    [DisplayName("Create Snowboard With Invalid Year Of Release Should Return BadRequest")]
+    [ClassData(typeof(InvalidYearOfReleaseTestData))]
+    public async Task CreateSnowboard_InvalidYearOfRelease_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddJsonBody(invalidRequest);
+
+        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Theory]
+    [ClassData(typeof(EmptyStringPropertiesTestData))]
+    public async Task CreateSnowboard_WithEmptyStringProperties_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddJsonBody(invalidRequest);
+
+        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
 }

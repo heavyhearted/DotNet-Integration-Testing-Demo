@@ -14,15 +14,16 @@ public class SnowboardValidator : AbstractValidator<Snowboard>
         
         RuleFor(x => x.Id)
             .NotEmpty();
-      
+
         RuleFor(x => x.SnowboardLineup)
-            .NotEmpty();
+            .NotEmpty()
+            .Must(lineup => lineup.All(entry => !string.IsNullOrWhiteSpace(entry)));
         
         RuleFor(x => x.SnowboardBrand)
             .NotEmpty();
         
         RuleFor(x => x.YearOfRelease)
-            .LessThanOrEqualTo(DateTime.UtcNow.Year + 1)
+            .InclusiveBetween(1965, DateTime.UtcNow.Year + 1)
             .WithMessage("Year of release must be a valid Snowboard Season year, up to and including next year.");
         
         RuleFor(x => x.Slug)

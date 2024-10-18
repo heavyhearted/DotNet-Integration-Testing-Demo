@@ -57,7 +57,7 @@ public class GetSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncLife
     }
 
     [Theory]
-    [ClassData(typeof(InvalidSnowboardGuidTheoryData))]
+    [ClassData(typeof(NonExistingSnowboardGuidTheoryData))]
     public async Task Get_ReturnsNotFound_WhenSnowboardDoesNotExist(string guidAsText)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
