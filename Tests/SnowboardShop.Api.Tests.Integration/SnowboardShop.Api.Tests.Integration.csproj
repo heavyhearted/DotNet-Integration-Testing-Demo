@@ -31,4 +31,10 @@
     <ItemGroup>
       <ProjectReference Include="..\..\SnowboardShop.Api\SnowboardShop.Api.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Update="TestData\missing_snowboard_properties.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 </Project>

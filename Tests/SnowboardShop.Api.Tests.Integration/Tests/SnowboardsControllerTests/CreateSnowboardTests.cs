@@ -106,10 +106,8 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     public async Task CreateDuplicateSnowboardAttempt_SecondRequestSubmission_ShouldReturnBadRequest()
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-        var faker = new CreateSnowboardFaker();
-        var snowboardRequest = faker.Generate();
-
-
+        var snowboardRequest = _snowboardFaker.Generate();
+        
         var firstRequest = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         firstRequest.AddJsonBody(snowboardRequest);
 
@@ -177,6 +175,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     }
     
     [Theory]
+    [DisplayName("Create Snowboard With Empty String Properties Should Return BadRequest")]
     [ClassData(typeof(EmptyStringPropertiesTestData))]
     public async Task CreateSnowboard_WithEmptyStringProperties_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
     {
@@ -189,5 +188,60 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+    
+    [Theory]
+    [DisplayName("Create Snowboard With Invalid Data Types Should Return BadRequest")]
+    [InlineData(123, 2022, new[] { "Freestyle", "All-Mountain" })] // SnowboardBrand should be string, but is int
+    [InlineData("BrandA", "InvalidYear", new[] { "Freestyle", "All-Mountain" })] // YearOfRelease should be int, but is string
+    [InlineData("BrandA", 2022, "NotAList")] // SnowboardLineup should be IEnumerable<string>, but is string
+    [InlineData(123.45, "InvalidYear", "NotAList")] // All fields have invalid types
+    [InlineData(null, null, null)] // All fields are null
+    public async Task CreateSnowboard_WithInvalidDataTypes_ShouldReturnBadRequest(object snowboardBrand, object yearOfRelease, object snowboardLineup)
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
 
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+    
+        var invalidRequest = new
+        {
+            SnowboardBrand = snowboardBrand,
+            YearOfRelease = yearOfRelease,
+            SnowboardLineup = snowboardLineup
+        };
+
+        request.AddJsonBody(invalidRequest);
+
+        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Theory]
+    [ClassData(typeof(ExtraUnmappedFieldsTestData))]
+    public async Task CreateSnowboard_WithExtraUnmappedFields_ShouldReturnSuccess(object requestWithExtraFields)
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddJsonBody(requestWithExtraFields); 
+        
+        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Theory]
+    [DisplayName("Create Snowboard With Null Properties Should Return BadRequest")]
+    [ClassData(typeof(NullPropertiesTestData))]
+    public async Task CreateSnowboard_WithNullProperties_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddJsonBody(invalidRequest);
+
+        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }
