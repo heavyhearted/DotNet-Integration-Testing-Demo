@@ -1,7 +1,7 @@
 using Bogus;
 using SnowboardShop.Contracts.Requests;
 
-namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataFakers;
+namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 
 public class CreateSnowboardFaker : Faker<CreateSnowboardRequest>
 {

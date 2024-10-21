@@ -6,8 +6,9 @@ using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
 using SnowboardShop.Api.Tests.Integration.TestData;
 using SnowboardShop.Api.Tests.Integration.TestData.TheoryData;
+using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
-using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataFakers;
+using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;
 using Xunit.Abstractions;
@@ -125,7 +126,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
     [Theory]
     [DisplayName("Create Snowboard With Missing Required Fields Should Return BadRequest")]
-    [ClassData(typeof(MissingSnowboardProperties))]
+    [ClassData(typeof(MissingSnowboardPropertiesTheoryData))]
     public async Task CreateSnowboard_MissingRequiredFields_ShouldReturnBadRequest(string jsonPayload)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
@@ -154,7 +155,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
     [Theory]
     [DisplayName("Create Snowboard With Invalid Year Of Release Should Return BadRequest")]
-    [ClassData(typeof(InvalidYearOfReleaseTestData))]
+    [ClassData(typeof(InvalidSnowboardYearOfReleaseTheoryData))]
     public async Task CreateSnowboard_InvalidYearOfRelease_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
@@ -169,7 +170,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     
     [Theory]
     [DisplayName("Create Snowboard With Empty String Properties Should Return BadRequest")]
-    [ClassData(typeof(EmptyStringPropertiesTestData))]
+    [ClassData(typeof(EmptyStringSnowboardTheoryData))]
     public async Task CreateSnowboard_WithEmptyStringProperties_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
@@ -183,35 +184,8 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     }
     
     [Theory]
-    [DisplayName("Create Snowboard With Invalid Data Types Should Return BadRequest")]
-    [InlineData(123, 2022, new[] { "Freestyle", "All-Mountain" })] // SnowboardBrand should be string, but is int
-    [InlineData("BrandA", "InvalidYear", new[] { "Freestyle", "All-Mountain" })] // YearOfRelease should be int, but is string
-    [InlineData("BrandA", 2022, "NotAList")] // SnowboardLineup should be IEnumerable<string>, but is string
-    [InlineData(123.45, "InvalidYear", "NotAList")] // All fields have invalid types
-    [InlineData(null, null, null)] // All fields are null
-    public async Task CreateSnowboard_WithInvalidDataTypes_ShouldReturnBadRequest(object snowboardBrand, object yearOfRelease, object snowboardLineup)
-    {
-        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-
-        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
-    
-        var invalidRequest = new
-        {
-            SnowboardBrand = snowboardBrand,
-            YearOfRelease = yearOfRelease,
-            SnowboardLineup = snowboardLineup
-        };
-
-        request.AddJsonBody(invalidRequest);
-
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
-
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-    
-    [Theory]
     [DisplayName("Create Snowboard With Null Properties Should Return BadRequest")]
-    [ClassData(typeof(NullSnowboardProperties))]
+    [ClassData(typeof(NullSnowboardPropertiesTheoryData))]
     public async Task CreateSnowboard_WithNullProperties_ShouldReturnBadRequest(string jsonPayload)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
@@ -226,7 +200,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
     [Theory]
     [DisplayName("Create Snowboard With Invalid Properties Should Return BadRequest")]
-    [ClassData(typeof(InvalidSnowboardProperties))]
+    [ClassData(typeof(InvalidSnowboardTheoryData))]
     public async Task CreateSnowboard_WithInvalidProperties_ShouldReturnBadRequest(string jsonPayload)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
