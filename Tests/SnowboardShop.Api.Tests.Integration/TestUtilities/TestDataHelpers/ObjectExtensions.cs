@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace SnowboardShop.Api.Tests.Integration.TestUtilities;
+namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 
 public static class ObjectExtensions
 {

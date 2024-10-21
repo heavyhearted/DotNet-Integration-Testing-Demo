@@ -1,0 +1,26 @@
+[
+  {
+    "snowboardBrand": 123,
+    "yearOfRelease": 2022,
+    "snowboardLineup": ["Freestyle", "All-Mountain"]
+  },
+  {
+    "snowboardBrand": "BrandA",
+    "yearOfRelease": "InvalidYear",
+    "snowboardLineup": ["Freestyle", "All-Mountain"]
+  },
+  {
+    "snowboardBrand": "BrandA",
+    "yearOfRelease": 2022,
+    "snowboardLineup": "NotAList"
+  },
+  {
+    "snowboardBrand": 123.45,
+    "yearOfRelease": "InvalidYear",
+    "snowboardLineup": "NotAList"
+  },
+  {
+    "InvalidField1": "UnexpectedValue1",
+    "InvalidField2": "UnexpectedValue2"
+  }
+]

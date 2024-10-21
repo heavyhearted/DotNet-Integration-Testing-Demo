@@ -1,10 +1,9 @@
-using System.Text.Json;
 using Bogus;
-using SnowboardShop.Api.Tests.Integration.TestUtilities;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataFakers;
+using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 
-namespace SnowboardShop.Api.Tests.Integration.TestData
+namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData
 {
     public class CreateSnowboardTheoryData : TheoryData<CreateSnowboardRequest>
     {
@@ -28,28 +27,6 @@ namespace SnowboardShop.Api.Tests.Integration.TestData
             for (int i = 0; i < NumberOfGuidsToGenerate; i++)
             {
                 Add(Guid.NewGuid().ToString());
-            }
-        }
-    }
-
-    public class MissingSnowboardProperties : TheoryData<string>
-    {
-        public MissingSnowboardProperties()
-        {
-            string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData",
-                "missing_snowboard_properties.json");
-
-
-            var jsonData = File.ReadAllText(jsonFilePath);
-            var testCases = JsonSerializer.Deserialize<object[]>(jsonData);
-
-            foreach (var testCase in testCases!)
-            {
-                string jsonString = JsonSerializer.Serialize(testCase, new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
-                Add(jsonString);
             }
         }
     }
@@ -106,71 +83,47 @@ namespace SnowboardShop.Api.Tests.Integration.TestData
             Add(CreateRequest("", currentYear, lineupWithEmptyString));
         }
     }
+    
 
-
-    public class ExtraUnmappedFieldsTestData : TheoryData<object>
+    public class MissingSnowboardProperties : TheoryData<string>
     {
-        public ExtraUnmappedFieldsTestData()
+        public MissingSnowboardProperties()
         {
-            var faker = new CreateSnowboardFaker();
-            var baseRequest = faker.Generate(); 
-
+            string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData",
+                "JsonData", "missing_snowboard_properties.json");
             
-            var requestWithOneExtraField = baseRequest.DeepClone();
-            var requestWithSingleUnmappedField = new
+            foreach (var jsonTestCase in JsonDataHelper.LoadJsonTestCases(jsonFilePath))
             {
-                ExtraField1 = "UnexpectedValue1" 
-            };
-            Add(requestWithSingleUnmappedField);
-
-            
-            var requestWithTwoExtraFields = baseRequest.DeepClone();
-            var requestWithDoubleUnmappedFields = new
-            {
-                ExtraField1 = "UnexpectedValue1", 
-                ExtraField2 = "UnexpectedValue2" 
-            };
-            Add(requestWithDoubleUnmappedFields);
-            
-            
-            var requestWithThreeExtraFields = baseRequest.DeepClone();
-            var requestWithTripleUnmappedFields = new
-            {
-                ExtraField1 = "UnexpectedValue1", 
-                ExtraField2 = "UnexpectedValue2", 
-                ExtraField3 = "UnexpectedValue3" 
-            };
-            Add(requestWithTripleUnmappedFields);
+                Add(jsonTestCase); 
+            }
         }
     }
     
-    public class NullPropertiesTestData : TheoryData<CreateSnowboardRequest>
+    public class NullSnowboardProperties : TheoryData<string>
     {
-        public NullPropertiesTestData()
+        public NullSnowboardProperties()
         {
-            var faker = new Faker();
-            var currentYear = DateTime.UtcNow.Year;
-            var validSnowboardBrand = faker.PickRandom(SnowboardGenerationConstants.ValidSnowboardBrands);
-            var validSnowboardLineup = faker.Random.ArrayElements(SnowboardGenerationConstants.SnowboardLineupList, faker.Random.Int(1, 5)).ToList();
-
-            // Factory method to create request
-            CreateSnowboardRequest CreateRequest(string? snowboardBrand, int? yearOfRelease, List<string>? snowboardLineup) => new()
+            string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", 
+                "JsonData", "null_snowboard_properties.json");
+            
+            foreach (var jsonTestCase in JsonDataHelper.LoadJsonTestCases(jsonFilePath))
             {
-                SnowboardBrand = snowboardBrand!,
-                YearOfRelease = yearOfRelease ?? default,  // If null, default to 0 or a valid year
-                SnowboardLineup = snowboardLineup!
-            };
-
-            Add(CreateRequest(null, currentYear, validSnowboardLineup));
-
-            Add(CreateRequest(validSnowboardBrand, currentYear, null));
-
-            Add(CreateRequest(null, currentYear, null));
-
-            Add(CreateRequest(validSnowboardBrand, null, validSnowboardLineup));
-
-            Add(CreateRequest(null, null, null));
+                Add(jsonTestCase); 
+            }
         }
     }
-
+    
+    public class InvalidSnowboardProperties : TheoryData<string>
+    {
+        public InvalidSnowboardProperties()
+        {
+            string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData", 
+                "JsonData", "invalid_snowboard_properties.json");
+            
+            foreach (var jsonTestCase in JsonDataHelper.LoadJsonTestCases(jsonFilePath))
+            {
+                Add(jsonTestCase); 
+            }
+        }
+    }
 }

@@ -5,6 +5,7 @@ using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
 using SnowboardShop.Api.Tests.Integration.TestData;
+using SnowboardShop.Api.Tests.Integration.TestData.TheoryData;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataFakers;
 using SnowboardShop.Contracts.Requests;
@@ -36,6 +37,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
     public async Task DisposeAsync()
     {
+        //TODO 
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
 
         foreach (var id in _createdIds)
@@ -44,15 +46,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
             request.AddUrlSegment("id", id);
 
             var response = await restClient.DeleteAsync(request);
-
-            if (response.StatusCode != HttpStatusCode.NotFound)
-            {
-                _output.WriteLine($"Failed to delete snowboard with ID: {id}. Status: {response.StatusCode}");
-            }
-            else
-            {
-                _output.WriteLine($"Successfully deleted snowboard with ID: {id}");
-            }
         }
     }
 
@@ -217,13 +210,14 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     }
     
     [Theory]
-    [ClassData(typeof(ExtraUnmappedFieldsTestData))]
-    public async Task CreateSnowboard_WithExtraUnmappedFields_ShouldReturnSuccess(object requestWithExtraFields)
+    [DisplayName("Create Snowboard With Null Properties Should Return BadRequest")]
+    [ClassData(typeof(NullSnowboardProperties))]
+    public async Task CreateSnowboard_WithNullProperties_ShouldReturnBadRequest(string jsonPayload)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
-        request.AddJsonBody(requestWithExtraFields); 
+        
+        request.AddJsonBody(jsonPayload);
         
         var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
         
@@ -231,17 +225,18 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     }
 
     [Theory]
-    [DisplayName("Create Snowboard With Null Properties Should Return BadRequest")]
-    [ClassData(typeof(NullPropertiesTestData))]
-    public async Task CreateSnowboard_WithNullProperties_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
+    [DisplayName("Create Snowboard With Invalid Properties Should Return BadRequest")]
+    [ClassData(typeof(InvalidSnowboardProperties))]
+    public async Task CreateSnowboard_WithInvalidProperties_ShouldReturnBadRequest(string jsonPayload)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
-        request.AddJsonBody(invalidRequest);
+    
+        request.AddJsonBody(jsonPayload);
 
         var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
 }
