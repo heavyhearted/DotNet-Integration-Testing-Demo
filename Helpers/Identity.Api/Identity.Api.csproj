@@ -19,4 +19,13 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="FakeVault\DemoSecrets\demo_postgres_password.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="FakeVault\DemoSecrets\IMPORTANT_DemoSecrets.md">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

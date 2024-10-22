@@ -16,10 +16,13 @@ public class IdentityServiceResponse
 public class IdentityController : ControllerBase
 {
     /* This class is a demonstration helper for generating JSON Web Tokens (JWTs).
-     It uses a symmetric key stored in code for demo purpose simplicity, which must not be done in a real-world scenario.
-     Store secrets securely using environment variables or a secrets manager, or a vault.
-     */
-    private const string TokenSecret = "DemoPurposesOnlyThisMustBeStoredSecurelyInTheRealWorldForExampleInUserSecretOrEnvironmentVariableOrKeyVault";
+     It retrieves the TokenSecret from the FakeVault for demo purposes.
+     In a real-world scenario, secrets like the TokenSecret must be stored securely,
+     e.g., using environment variables, a secrets manager, or a vault.
+     The TokenSecret used here is a symmetric key, which implies that the same key is utilized for both signing and verifying the token.
+     This approach is not appropriate for production scenarios due to inherent security limitations.
+     For improved security, consider using asymmetric keys (i.e., a public/private key pair),
+     which provide a higher level of security by enabling separate keys for signing and verification processes.  */
     private static readonly TimeSpan TokenLifetime = TimeSpan.FromHours(8);
 
     [HttpPost("token")]
@@ -27,7 +30,7 @@ public class IdentityController : ControllerBase
         [FromBody]TokenGenerationRequest request)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(TokenSecret);
+        var key = Encoding.UTF8.GetBytes(FakeVault.Core.FakeVault.TokenSecret);
 
         var claims = new List<Claim>
         {

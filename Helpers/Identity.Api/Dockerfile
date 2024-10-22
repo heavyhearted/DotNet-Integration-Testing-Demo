@@ -26,18 +26,21 @@ RUN dotnet publish "Identity.Api.csproj" -c Release -o /app/publish /p:UseAppHos
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
+# Build arguments
+ARG CERTIFICATE_PASSWORD
+
 # Install OpenSSL to generate certificate
 RUN apt-get update && apt-get install -y openssl
 
-# Generate self-signed certificate and create .pfx file
+# Generate self-signed certificate and create .pfx file - done for ease of the demo when running the API in a Docker container
 RUN mkdir /https && \
     openssl req -x509 -newkey rsa:2048 -keyout /https/key.pem -out /https/cert.pem -days 365 -nodes -subj "/CN=localhost" && \
-    openssl pkcs12 -export -out /https/cert.pfx -inkey /https/key.pem -in /https/cert.pem -passout pass:Test1234!
+    openssl pkcs12 -export -out /https/cert.pfx -inkey /https/key.pem -in /https/cert.pem -passout pass:${CERTIFICATE_PASSWORD}
 
 # Set environment variables for ASP.NET Core to use the generated certificate
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS=https://+:5003;http://+:5002
-ENV ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password=${CERTIFICATE_PASSWORD}
 ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
 
 # Copy the published output from the build stage

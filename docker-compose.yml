@@ -1,33 +1,34 @@
-﻿# THE VALUES ARE HARDCODED FOR DEMONSTRATION PURPOSES ONLY and ease of running the demo framework.
-# In a real scenario, sensitive data such as POSTGRES_USER/POSTGRES_PASSWORD/Certificates/Connection String must not be hardcoded.
-# Instead, use one of the following secure methods:
-# - Use a `.env` file (not committed to version control) to store sensitive environment variables.
-# - Use Docker secrets to manage sensitive information securely.
-# - Use cloud-based secret management services such as Azure Key Vault, AWS Secrets Manager etc. 
-
-services:
+﻿services:
   db:
     image: postgres:latest
     restart: always
     environment:
-      - POSTGRES_USER=demouser
-      - POSTGRES_PASSWORD=changeme
-      - POSTGRES_DB=snowboards
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_PASSWORD_FILE=/run/secrets/demo_postgres_password
+    - POSTGRES_DB=snowboards
     ports:
       - '5432:5432'
+    secrets:
+      - demo_postgres_password
 
   identity-api:
     build:
       context: ./Helpers/Identity.Api
       dockerfile: Dockerfile
+      args:
+        CERTIFICATE_PASSWORD: ${CERTIFICATE_PASSWORD}
     ports:
       - '5002:5002'
       - '5003:5003'
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=https://+:5003;http://+:5002
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=Test1234!
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/cert.pfx
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=snowboards;Username=demouser;Password=changeme
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERTIFICATE_PASSWORD}
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=${CERTIFICATE_PATH}
+      - ConnectionStrings__DefaultConnection=${CONNECTION_STRING}
     depends_on:
       - db
+        
+secrets:
+  demo_postgres_password:
+    file: ./Helpers/Identity.Api/FakeVault/DemoSecrets/demo_postgres_password.txt
