@@ -31,14 +31,10 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         _output = output;
     }
 
-    public Task InitializeAsync()
-    {
-        return Task.CompletedTask;
-    }
+    public Task InitializeAsync() => Task.CompletedTask;
 
     public async Task DisposeAsync()
     {
-        //TODO 
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
 
         foreach (var id in _createdIds)
@@ -46,23 +42,23 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
             var request = new RestRequest(DeleteSnowboardEndpoint, Method.Delete);
             request.AddUrlSegment("id", id);
 
-            var response = await restClient.DeleteAsync(request);
+            await restClient.DeleteAsync(request);
         }
     }
 
     [Theory]
-    [DisplayName("Create Snowboard Should Succeed")]
+    [DisplayName("Create Snowboard With Valid Body Should Succeed")]
     [ClassData(typeof(CreateSnowboardTheoryData))]
-    public async Task CreateSnowboard_ShouldSucceed(CreateSnowboardRequest snowboardRequest)
+    public async Task CreateSnowboard_ValidBody_ShouldSucceed(CreateSnowboardRequest snowboardRequestBody)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
-        request.AddJsonBody(snowboardRequest);
+        request.AddJsonBody(snowboardRequestBody);
 
         var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        SnowboardAssertions.AssertCreateSnowboardResponseBody(response.Data, snowboardRequest);
+        SnowboardAssertions.AssertCreateSnowboardResponseBody(response.Data, snowboardRequestBody);
 
         _createdIds.Add(response.Data!.Id);
     }
