@@ -3,7 +3,7 @@ using SnowboardShop.Contracts.Requests;
 
 namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
 
-public class InvalidSnowboardYearOfReleaseTheoryData : TheoryData<CreateSnowboardRequest>
+public class InvalidSnowboardYearOfReleaseTheoryData : TheoryData<object>
 {
     public InvalidSnowboardYearOfReleaseTheoryData()
     {

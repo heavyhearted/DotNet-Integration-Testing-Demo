@@ -13,7 +13,6 @@ namespace SnowboardShop.Api.Tests.Integration.Tests.SnowboardsControllerTests;
 public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncLifetime
 {
     private const string DeleteSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Delete;
-    private const string CreateSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Create;
     private const string GetSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Get;
 
     private readonly ITestOutputHelper _output;
@@ -53,7 +52,7 @@ public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     
     [Fact]
     [DisplayName("Delete Snowboard Without Authentication Should Return Unauthorized")]
-    public async Task DeleteSnowboardWithoutAuthentication_ShouldReturnUnauthorized()
+    public async Task DeleteSnowboard_WithoutAuthentication_ShouldReturnUnauthorized()
     {
         var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
 
@@ -68,7 +67,7 @@ public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     
     [Fact]
     [DisplayName("Delete Snowboard As Trusted Member Should Return Forbidden")]
-    public async Task DeleteSnowboardAsTrustedMember_ShouldReturnForbidden()
+    public async Task DeleteSnowboard_AsTrustedMember_ShouldReturnForbidden()
     {
         var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
         
@@ -80,5 +79,39 @@ public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
+    
+    [Fact]
+    [DisplayName("Delete Snowboard Twice Should Return NotFound")]
+    public async Task DeleteSnowboard_Twice_ShouldReturnNotFound()
+    {
+        var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
+    
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+    
+        var deleteRequest = new RestRequest(DeleteSnowboardEndpoint, Method.Delete);
+        deleteRequest.AddUrlSegment("id", createdSnowboard.Id);
+        var deleteResponse = await restClient.ExecuteAsync(deleteRequest);
 
+        deleteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var secondDeleteResponse = await restClient.ExecuteAsync(deleteRequest); 
+
+        secondDeleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    [Fact]
+    [DisplayName("Delete Snowboard Via Slug Should Return NotFound")]
+    public async Task DeleteSnowboard_ViaSlug_ShouldReturnNotFound()
+    {
+        var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
+    
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+    
+        var deleteRequest = new RestRequest(DeleteSnowboardEndpoint, Method.Delete);
+        deleteRequest.AddUrlSegment("id", createdSnowboard.Slug);
+
+        var deleteResponse = await restClient.ExecuteAsync(deleteRequest);
+
+        deleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

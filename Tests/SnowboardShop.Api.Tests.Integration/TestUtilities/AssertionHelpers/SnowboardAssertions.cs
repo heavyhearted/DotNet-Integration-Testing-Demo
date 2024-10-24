@@ -6,8 +6,8 @@ namespace SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
 
 public static class SnowboardAssertions
 {
-    public static void AssertCreateSnowboardResponseBody(SnowboardResponse? responseData,
-        CreateSnowboardRequest expectedRequest)
+    public static void AssertSnowboardResponseBody(SnowboardResponse? responseData,
+        dynamic expectedRequest) // dynamic is used to accept both CreateSnowboardRequest and UpdateSnowboardRequest since they have the same properties.
     {
         responseData.Should().NotBeNull();
         responseData!.Id.Should().NotBe(Guid.Empty);

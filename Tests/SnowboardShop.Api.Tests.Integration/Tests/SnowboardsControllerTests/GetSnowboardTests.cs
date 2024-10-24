@@ -91,7 +91,7 @@ public class GetSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncLife
     [Theory]
     [DisplayName("Get Snowboard With Non-Existing Id Should Return NotFound")]
     [ClassData(typeof(NonExistingSnowboardGuidTheoryData))]
-    public async Task Get_WithNonExistingId_ShouldReturnNotFound(string guidAsText)
+    public async Task GetSnowboard_WithNonExistingId_ShouldReturnNotFound(string guidAsText)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         var request = new RestRequest(GetSnowboardEndpoint);

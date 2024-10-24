@@ -54,10 +54,10 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(snowboardRequestBody);
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        SnowboardAssertions.AssertCreateSnowboardResponseBody(response.Data, snowboardRequestBody);
+        SnowboardAssertions.AssertSnowboardResponseBody(response.Data, snowboardRequestBody);
 
         _createdIds.Add(response.Data!.Id);
     }
@@ -70,7 +70,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(_snowboardFaker.Generate());
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
@@ -84,7 +84,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(_snowboardFaker.Generate());
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
@@ -107,7 +107,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var secondRequest = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         secondRequest.AddJsonBody(snowboardRequest);
 
-        var secondResponse = await restClient.ExecutePostAsync<SnowboardResponse>(secondRequest);
+        var secondResponse = await restClient.ExecuteAsync<SnowboardResponse>(secondRequest);
 
         secondResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var errorResponse = JsonSerializer.Deserialize<ValidationFailureResponse>(secondResponse.Content!);
@@ -127,7 +127,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddStringBody(jsonPayload, DataFormat.Json);
 
-        var response = await restClient.ExecutePostAsync(request);
+        var response = await restClient.ExecuteAsync(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -140,7 +140,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(new { });
 
-        var response = await restClient.ExecutePostAsync(request);
+        var response = await restClient.ExecuteAsync(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -155,7 +155,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(invalidRequest);
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -169,7 +169,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(invalidRequest);
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -183,7 +183,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(jsonPayload);
         
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -197,7 +197,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(jsonPayload);
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -211,7 +211,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(snowboardRequest);
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
@@ -225,10 +225,10 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(snowboardRequest);
 
-        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+        var response = await restClient.ExecuteAsync<SnowboardResponse>(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        SnowboardAssertions.AssertCreateSnowboardResponseBody(response.Data, snowboardRequest);
+        SnowboardAssertions.AssertSnowboardResponseBody(response.Data, snowboardRequest);
         
         _createdIds.Add(response.Data!.Id);
     }
