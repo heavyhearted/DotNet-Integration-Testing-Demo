@@ -45,8 +45,8 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         // Ensure the image is created asynchronously before being used
         _identityApiContainer = new ContainerBuilder()
             .WithImage(identityApiImage)  // Use the built Identity API image
-            .WithPortBinding(5002, 5002)  // HTTP port
-            .WithPortBinding(5003, 5003)  // HTTPS port
+            .WithPortBinding(5002, true)  // HTTP port
+            .WithPortBinding(5003, true)  // HTTPS port
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
             .WithEnvironment("CERTIFICATE_PASSWORD", certificatePassword)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5003))
@@ -70,6 +70,12 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
     {
         builder.ConfigureTestServices(services =>
         {
+            var identityApiSettings = new IdentityApiSettings
+            {
+                HttpPort = _identityApiContainer.GetMappedPublicPort(5003)
+            };
+
+            services.AddSingleton(identityApiSettings);
             services.AddSingleton<IAccessTokenService, AccessTokenService>();
             services.RemoveAll(typeof(IDbConnectionFactory));
             services.AddSingleton<IDbConnectionFactory>(_ =>
@@ -104,13 +110,23 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         return client;
     }
 
-    public async Task<RestClient> CreateAuthenticatedRestClientAsync(ITestOutputHelper? testOutputHelper = default)
+    public async Task<RestClient> CreateAuthenticatedRestClientAsync(
+        UserRoles roles = UserRoles.Admin | UserRoles.TrustedMember, 
+        ITestOutputHelper? testOutputHelper = default)
     {
         var client = CreateRestClient(testOutputHelper);
+
+        var externalPort = _identityApiContainer.GetMappedPublicPort(5003);
         var tokenService = Services.GetRequiredService<IAccessTokenService>();
-        var token = await tokenService.GetTokenAsync();
+        var token = await tokenService.GetTokenAsync(roles); 
+        
         client.AddDefaultHeader("Authorization", $"Bearer {token}");
 
         return client;
+    }
+    
+    public async Task<RestClient> CreateAuthenticatedRestClientAsync(ITestOutputHelper? testOutputHelper = default)
+    {
+        return await CreateAuthenticatedRestClientAsync(UserRoles.Admin | UserRoles.TrustedMember, testOutputHelper);
     }
 }

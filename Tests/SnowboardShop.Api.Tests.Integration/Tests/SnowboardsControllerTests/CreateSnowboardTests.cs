@@ -4,8 +4,7 @@ using System.Text.Json;
 using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
-using SnowboardShop.Api.Tests.Integration.TestData;
-using SnowboardShop.Api.Tests.Integration.TestData.TheoryData;
+using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
@@ -97,7 +96,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         var snowboardRequest = _snowboardFaker.Generate();
-        
         var firstRequest = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         firstRequest.AddJsonBody(snowboardRequest);
 
@@ -126,7 +124,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     public async Task CreateSnowboard_MissingRequiredFields_ShouldReturnBadRequest(string jsonPayload)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddStringBody(jsonPayload, DataFormat.Json);
 
@@ -155,7 +152,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     public async Task CreateSnowboard_InvalidYearOfRelease_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(invalidRequest);
 
@@ -170,7 +166,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     public async Task CreateSnowboard_WithEmptyStringProperties_ShouldReturnBadRequest(CreateSnowboardRequest invalidRequest)
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(invalidRequest);
 
@@ -186,7 +181,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
-        
         request.AddJsonBody(jsonPayload);
         
         var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
@@ -201,7 +195,6 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     {
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
-    
         request.AddJsonBody(jsonPayload);
 
         var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
@@ -209,4 +202,34 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
+    [Fact]
+    [DisplayName("Create Snowboard As Regular User Should Return Forbidden")]
+    public async Task CreateSnowboard_AsRegularUser_ShouldReturnForbidden()
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(UserRoles.RegularUser, _output);
+        var snowboardRequest = _snowboardFaker.Generate();
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddJsonBody(snowboardRequest);
+
+        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    [DisplayName("Create Snowboard As Trusted Member Should Succeed")]
+    public async Task CreateSnowboard_AsTrustedMember_ShouldSucceed()
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(UserRoles.TrustedMember, _output);
+        var snowboardRequest = _snowboardFaker.Generate();
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+        request.AddJsonBody(snowboardRequest);
+
+        var response = await restClient.ExecutePostAsync<SnowboardResponse>(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        SnowboardAssertions.AssertCreateSnowboardResponseBody(response.Data, snowboardRequest);
+        
+        _createdIds.Add(response.Data!.Id);
+    }
 }

@@ -17,7 +17,6 @@ public class GetSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncLife
 
     private readonly ITestOutputHelper _output;
     private readonly SnowboardsApiFactory _apiFactory;
-    private readonly CreateSnowboardFaker _snowboardFaker = new();
     private readonly HashSet<Guid> _createdIds = new();
     
     public GetSnowboardTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
