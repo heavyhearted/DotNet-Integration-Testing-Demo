@@ -1,13 +1,13 @@
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 
-namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
+namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
 
-public class NullSnowboardPropertiesTheoryData : TheoryData<string>
+public class InvalidSnowboardTheoryData : TheoryData<string>
 {
-    public NullSnowboardPropertiesTheoryData()
+    public InvalidSnowboardTheoryData()
     {
         string jsonFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TestData",
-            "JsonData", "null_snowboard_properties.json");
+            "JsonData", "invalid_snowboard_properties.json");
 
         foreach (var jsonTestCase in JsonDataHelper.LoadJsonTestCases(jsonFilePath))
         {

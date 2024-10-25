@@ -5,7 +5,7 @@ using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
-using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
+using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
@@ -80,7 +80,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
     [DisplayName("Create Snowboard With Invalid Authentication Should Return Unauthorized")]
     public async Task CreateSnowboard_InvalidAuthentication_ShouldReturnUnauthorized()
     {
-        var restClient = _apiFactory.CreateRestClient("invalid_token");
+        var restClient = _apiFactory.CreateRestClient("invalid_token", _output);
         var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
         request.AddJsonBody(_snowboardFaker.Generate());
 
@@ -143,6 +143,18 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var response = await restClient.ExecuteAsync(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+    
+    [Fact]
+    [DisplayName("Create Snowboard With Missing Payload Should Return BadRequest")]
+    public async Task CreateSnowboard_MissingPayload_ShouldReturnBadRequest()
+    {
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+        var request = new RestRequest(CreateSnowboardEndpoint, Method.Post);
+
+        var response = await restClient.ExecuteAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.UnsupportedMediaType);
     }
 
 

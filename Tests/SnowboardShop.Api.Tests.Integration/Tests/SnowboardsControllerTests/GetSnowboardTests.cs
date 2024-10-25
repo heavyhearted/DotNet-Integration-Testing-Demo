@@ -3,7 +3,7 @@ using System.Net;
 using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
-using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
+using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Responses;
 using Xunit.Abstractions;

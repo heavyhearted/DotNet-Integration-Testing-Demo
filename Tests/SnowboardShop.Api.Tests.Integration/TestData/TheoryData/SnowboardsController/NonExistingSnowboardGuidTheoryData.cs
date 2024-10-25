@@ -1,4 +1,4 @@
-namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
+namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
 
 public class NonExistingSnowboardGuidTheoryData : TheoryData<string>
 {

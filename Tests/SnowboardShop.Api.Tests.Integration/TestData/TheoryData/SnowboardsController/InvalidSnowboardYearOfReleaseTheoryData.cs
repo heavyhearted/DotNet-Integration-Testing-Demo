@@ -1,7 +1,7 @@
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 
-namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
+namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
 
 public class InvalidSnowboardYearOfReleaseTheoryData : TheoryData<object>
 {

@@ -1,6 +1,6 @@
 using SnowboardShop.Contracts.Requests;
 
-namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardController;
+namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
 
 public class UpdateSnowboardTheoryData : TheoryData<Func<CreateSnowboardRequest, UpdateSnowboardRequest>>
 {
