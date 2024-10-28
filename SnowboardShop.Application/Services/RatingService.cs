@@ -9,14 +9,16 @@ public class RatingService : IRatingService
 {
     private readonly IRatingRepository _ratingRepository;
     private readonly ISnowboardRepository _snowboardRepository;
+    private readonly IUserContextService _userContextService;
 
-    public RatingService(IRatingRepository ratingRepository, ISnowboardRepository snowboardRepository)
+    public RatingService(IRatingRepository ratingRepository, ISnowboardRepository snowboardRepository, IUserContextService userContextService)
     {
         _ratingRepository = ratingRepository;
         _snowboardRepository = snowboardRepository;
+        _userContextService = userContextService;
     }
 
-    public async Task<bool> RateSnowboardAsync(Guid snowboardId, int rating, Guid userId, CancellationToken token = default)
+    public async Task<bool> RateSnowboardAsync(Guid snowboardId, int rating, CancellationToken token = default)
     {
         if (rating is <= 0 or > 5)
         {
@@ -36,16 +38,16 @@ public class RatingService : IRatingService
             return false;
         }
 
-        return await _ratingRepository.RateSnowboardAsync(snowboardId, rating, userId, token);
+        return await _ratingRepository.RateSnowboardAsync(snowboardId, rating, _userContextService.UserId!.Value, token);
     }
     
-    public Task<IEnumerable<SnowboardRating>> GetRatingsForUserAsync(Guid userId, CancellationToken token = default)
+    public Task<IEnumerable<SnowboardRating>> GetRatingsForUserAsync(CancellationToken token = default)
     {
-        return _ratingRepository.GetRatingsForUserAsync(userId, token);
+        return _ratingRepository.GetRatingsForUserAsync(_userContextService.UserId!.Value, token);
     }
     
-    public Task<bool> DeleteRatingAsync(Guid movieId, Guid userId, CancellationToken token = default)
+    public Task<bool> DeleteRatingAsync(Guid movieId, CancellationToken token = default)
     {
-        return _ratingRepository.DeleteRatingAsync(movieId, userId, token);
+        return _ratingRepository.DeleteRatingAsync(movieId, _userContextService.UserId!.Value, token);
     }
 }

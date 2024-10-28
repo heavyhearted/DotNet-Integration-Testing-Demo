@@ -1,12 +1,13 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using SnowboardShop.Api;
 using SnowboardShop.Api.Auth;
 using SnowboardShop.Api.Health;
 using SnowboardShop.Api.Mapping;
+using SnowboardShop.Api.Services;
 using SnowboardShop.Application;
 using SnowboardShop.Application.Database;
+using SnowboardShop.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -56,6 +57,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<IUserContextService, UserContextService>();
 
 builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
