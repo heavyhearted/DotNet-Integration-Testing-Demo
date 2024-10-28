@@ -1,6 +1,8 @@
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 
+namespace SnowboardShop.Api.Tests.Integration.TestData.TheoryData.RatingsController;
+
 public class SnowboardRatingsTheoryData : TheoryData<Dictionary<CreateSnowboardRequest, RateSnowboardRequest>>
 {
     public SnowboardRatingsTheoryData()

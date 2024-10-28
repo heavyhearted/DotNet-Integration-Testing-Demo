@@ -3,6 +3,7 @@ using System.Net;
 using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
+using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.RatingsController;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;
@@ -13,7 +14,6 @@ namespace SnowboardShop.Api.Tests.Integration.Tests.RatingsControllerTests;
 public class GetAllRatingsTests : IClassFixture<SnowboardsApiFactory>, IAsyncLifetime
 {
     private const string GetAllRatingsEndpoint = Core.ApiEndpoints.Ratings.GetUserRatings;
-    private const string RateSnowboardEndpoint = Core.ApiEndpoints.Ratings.Rate;
     private const string DeleteRatingEndpoint = Core.ApiEndpoints.Ratings.DeleteRating;
 
     private readonly ITestOutputHelper _output;
