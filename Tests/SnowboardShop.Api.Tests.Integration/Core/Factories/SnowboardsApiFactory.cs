@@ -17,51 +17,18 @@ using IContainer = DotNet.Testcontainers.Containers.IContainer;
 
 namespace SnowboardShop.Api.Tests.Integration.Core.Factories;
 
-public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime, IApiFactory
+public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _dbContainer;
-    private IContainer _identityApiContainer;
+    private PostgreSqlContainer _dbContainer = default!;
+    private IContainer _identityApiContainer = default!;
 
-    public MocksProvider MocksProvider { get; }
-
-    public SnowboardsApiFactory()
-    {
-        MocksProvider = new MocksProvider();
-
-        DotNetEnv.Env.Load("Helpers/Identity.Api/FakeVault/DemoSecrets/demo.env");
-        var certificatePassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
-
-        // Initialize PostgreSQL container using credentials from FakeVault
-        _dbContainer = new PostgreSqlBuilder()
-            .WithDatabase(FakeVault.DatabaseName)
-            .WithUsername(FakeVault.DatabaseUsername)
-            .WithPassword(FakeVault.DatabasePassword)
-            .Build();
-
-        // Build the Identity API Docker image and create the container
-        var identityApiImage = new ImageFromDockerfileBuilder()
-            .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), "Helpers/Identity.Api")
-            .WithDockerfile("Dockerfile")
-            .Build();
-
-        identityApiImage.CreateAsync().GetAwaiter().GetResult();
-
-        // Ensure the image is created asynchronously before being used
-        _identityApiContainer = new ContainerBuilder()
-            .WithImage(identityApiImage) // Use the built Identity API image
-            .WithPortBinding(5002, true) // HTTP port
-            .WithPortBinding(5003, true) // HTTPS port
-            .WithEnvironment("ASPNETCORE_ENVIRONMENT", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
-            .WithEnvironment("CERTIFICATE_PASSWORD", certificatePassword)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5003))
-            .Build();
-    }
+    public MocksProvider MocksProvider { get; } = new();
 
     public async Task InitializeAsync()
     {
+        await InitializeContainersAsync();
         await _identityApiContainer.StartAsync();
         await _dbContainer.StartAsync();
-
 
         var dataSeedPackages = Services.GetServices<IDataSeed>();
 
@@ -82,6 +49,37 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         {
             await dataSeedPackage.ClearAsync();
         }
+    }
+
+    private async Task InitializeContainersAsync()
+    {
+        DotNetEnv.Env.Load("Helpers/Identity.Api/FakeVault/DemoSecrets/demo.env");
+        var certificatePassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
+
+        // Initialize PostgreSQL container using credentials from FakeVault
+        _dbContainer = new PostgreSqlBuilder()
+            .WithDatabase(FakeVault.DatabaseName)
+            .WithUsername(FakeVault.DatabaseUsername)
+            .WithPassword(FakeVault.DatabasePassword)
+            .Build();
+
+        // Build the Identity API Docker image and create the container
+        var identityApiImage = new ImageFromDockerfileBuilder()
+            .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), "Helpers/Identity.Api")
+            .WithDockerfile("Dockerfile")
+            .Build();
+
+        await identityApiImage.CreateAsync();
+
+        // Ensure the image is created asynchronously before being used
+        _identityApiContainer = new ContainerBuilder()
+            .WithImage(identityApiImage) // Use the built Identity API image
+            .WithPortBinding(5002, true) // HTTP port
+            .WithPortBinding(5003, true) // HTTPS port
+            .WithEnvironment("ASPNETCORE_ENVIRONMENT", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
+            .WithEnvironment("CERTIFICATE_PASSWORD", certificatePassword)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5003))
+            .Build();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)

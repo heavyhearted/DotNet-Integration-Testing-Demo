@@ -17,10 +17,10 @@ public class DeleteSnowboardTests : IAsyncLifetime
     private const string GetSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Get;
 
     private readonly ITestOutputHelper _output;
-    private readonly TestContainersSnowboardsApiFactory _apiFactory;
+    private readonly SnowboardsApiFactory _apiFactory;
     private readonly HashSet<Guid> _createdIds = new();
 
-    public DeleteSnowboardTests(ITestOutputHelper output, TestContainersSnowboardsApiFactory apiFactory)
+    public DeleteSnowboardTests(ITestOutputHelper output, SnowboardsApiFactory apiFactory)
     {
         _apiFactory = apiFactory;
         _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());

@@ -18,10 +18,10 @@ public class GetAllRatingsTests : IAsyncLifetime
     private const string DeleteRatingEndpoint = Core.ApiEndpoints.Ratings.DeleteRating;
 
     private readonly ITestOutputHelper _output;
-    private readonly TestContainersSnowboardsApiFactory _apiFactory;
+    private readonly SnowboardsApiFactory _apiFactory;
     private readonly HashSet<Guid> _createdIds = new();
     
-    public GetAllRatingsTests(TestContainersSnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    public GetAllRatingsTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
         _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());

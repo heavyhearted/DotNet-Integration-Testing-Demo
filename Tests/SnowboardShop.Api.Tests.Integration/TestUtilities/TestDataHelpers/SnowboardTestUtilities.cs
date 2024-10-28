@@ -12,7 +12,7 @@ namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 public static class SnowboardTestUtilities
 {
     public static async Task<SnowboardResponse> CreateSnowboardAsync(
-        IApiFactory apiFactory,
+        SnowboardsApiFactory apiFactory,
         ITestOutputHelper output,
         HashSet<Guid> createdIds,
         UserRoles roles = UserRoles.Admin | UserRoles.TrustedMember)
