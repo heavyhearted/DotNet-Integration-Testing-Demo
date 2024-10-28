@@ -23,6 +23,8 @@ public class GetAllRatingsTests : IClassFixture<SnowboardsApiFactory>, IAsyncLif
     public GetAllRatingsTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
+        _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());
+        
         _output = output;
     }
 
@@ -44,6 +46,8 @@ public class GetAllRatingsTests : IClassFixture<SnowboardsApiFactory>, IAsyncLif
             deleteSnowboardRequest.AddUrlSegment("id", id);
             await restClient.ExecuteAsync(deleteSnowboardRequest);
         }
+        
+        _apiFactory.MocksProvider.ResetAllMocks();
     }
 
     

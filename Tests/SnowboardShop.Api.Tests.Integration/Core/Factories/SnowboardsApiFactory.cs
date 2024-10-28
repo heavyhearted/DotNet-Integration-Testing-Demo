@@ -1,6 +1,5 @@
-using System.ComponentModel;
+using System.Reflection;
 using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
 using Identity.Api.FakeVault.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
+using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Application.Database;
 using Testcontainers.PostgreSql;
 using Xunit.Abstractions;
@@ -19,11 +19,17 @@ namespace SnowboardShop.Api.Tests.Integration.Core.Factories;
 
 public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
 {
+    private bool _isDataSeedInitialized = false;
+    private bool _isDataSeedDisposed = false;
     private readonly PostgreSqlContainer _dbContainer;
     private IContainer _identityApiContainer;
+    
+    public MocksProvider MocksProvider { get; }
 
     public SnowboardsApiFactory()
     {
+        MocksProvider = new MocksProvider();
+        
         DotNetEnv.Env.Load("Helpers/Identity.Api/FakeVault/DemoSecrets/demo.env");
         var certificatePassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
 
@@ -52,18 +58,61 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5003))
             .Build();
     }
-
-
+    
     public async Task InitializeAsync()
     {
         await _identityApiContainer.StartAsync();
         await _dbContainer.StartAsync();
+        
+        await SemaphoreInstance.Instance.WaitAsync();
+        try
+        {
+            if (_isDataSeedInitialized)
+            {
+                return;
+            }
+            
+            var dataSeedPackages = Services.GetServices<IDataSeed>();
+
+            foreach (var dataSeedPackage in dataSeedPackages)
+            {
+                await dataSeedPackage.SeedAsync();
+            }
+            
+            _isDataSeedInitialized = true;
+        }
+        finally
+        {
+            SemaphoreInstance.Instance.Release();
+        }
     }
 
     public new async Task DisposeAsync()
     {
         await _identityApiContainer.StopAsync();
         await _dbContainer.StopAsync();
+        
+        await SemaphoreInstance.Instance.WaitAsync();
+        try
+        {
+            if (_isDataSeedDisposed)
+            {
+                return;
+            }
+            
+            var dataSeedPackages = Services.GetServices<IDataSeed>();
+
+            foreach (var dataSeedPackage in dataSeedPackages)
+            {
+                await dataSeedPackage.ClearAsync();
+            }
+
+            _isDataSeedDisposed = true;
+        }
+        finally
+        {
+            SemaphoreInstance.Instance.Release();
+        }
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -80,6 +129,22 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
             services.RemoveAll(typeof(IDbConnectionFactory));
             services.AddSingleton<IDbConnectionFactory>(_ =>
                 new NpgsqlConnectionFactory(_dbContainer.GetConnectionString()));
+            
+            
+            // Register all data seed packages
+            var dataSeedPackages = Assembly.GetAssembly(typeof(IDataSeed))!
+                .GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IDataSeed)))
+                .ToList();
+
+            foreach (var dataSeedPackage in dataSeedPackages)
+            {
+                services.AddSingleton(dataSeedPackage);
+            }
+
+            services.AddSingleton<DataSeedFactory>();
+            
+            MocksProvider.RegisterMocks(services);
         });
     }
 

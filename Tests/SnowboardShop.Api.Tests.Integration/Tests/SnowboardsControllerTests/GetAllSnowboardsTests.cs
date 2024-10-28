@@ -22,6 +22,8 @@ public class GetAllSnowboardsTests : IClassFixture<SnowboardsApiFactory>, IAsync
     public GetAllSnowboardsTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
+        _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());
+        
         _output = output;
     }
     
@@ -38,6 +40,8 @@ public class GetAllSnowboardsTests : IClassFixture<SnowboardsApiFactory>, IAsync
 
             await restClient.DeleteAsync(request);
         }
+        
+        _apiFactory.MocksProvider.ResetAllMocks();
     }
     
     [Fact]

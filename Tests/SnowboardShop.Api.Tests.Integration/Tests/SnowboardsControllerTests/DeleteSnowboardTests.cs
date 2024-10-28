@@ -21,20 +21,26 @@ public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
     public DeleteSnowboardTests(ITestOutputHelper output, SnowboardsApiFactory apiFactory)
     {
-        _output = output;
         _apiFactory = apiFactory;
+        _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());
+
+        _output = output;
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
-    
-    public Task DisposeAsync() => Task.CompletedTask;
-    
+
+    public Task DisposeAsync()
+    {
+        _apiFactory.MocksProvider.ResetAllMocks();
+        return Task.CompletedTask;
+    }
+
     [Fact]
     [DisplayName("Delete Snowboard Should Succeed")]
     public async Task DeleteSnowboard_ShouldSucceed()
     {
         var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
-        
+
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         var deleteRequest = new RestRequest(DeleteSnowboardEndpoint, Method.Delete);
         deleteRequest.AddUrlSegment("id", createdSnowboard.Id);
@@ -42,14 +48,14 @@ public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         var deleteResponse = await restClient.ExecuteAsync(deleteRequest);
 
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var getRequest = new RestRequest(GetSnowboardEndpoint);
         getRequest.AddUrlSegment("idOrSlug", createdSnowboard.Id);
-        
+
         var getResponse = await restClient.ExecuteGetAsync<SnowboardResponse>(getRequest);
         getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
-    
+
     [Fact]
     [DisplayName("Delete Snowboard Without Authentication Should Return Unauthorized")]
     public async Task DeleteSnowboard_WithoutAuthentication_ShouldReturnUnauthorized()
@@ -64,14 +70,15 @@ public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
-    
+
     [Fact]
     [DisplayName("Delete Snowboard As Trusted Member Should Return Forbidden")]
     public async Task DeleteSnowboard_AsTrustedMember_ShouldReturnForbidden()
     {
         var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
-        
-        var trustedMemberRestClient = await _apiFactory.CreateAuthenticatedRestClientAsync(UserRoles.TrustedMember, _output);
+
+        var trustedMemberRestClient =
+            await _apiFactory.CreateAuthenticatedRestClientAsync(UserRoles.TrustedMember, _output);
         var deleteRequest = new RestRequest(DeleteSnowboardEndpoint, Method.Delete);
         deleteRequest.AddUrlSegment("id", createdSnowboard.Id);
 
@@ -79,34 +86,34 @@ public class DeleteSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
-    
+
     [Fact]
     [DisplayName("Delete Snowboard Twice Should Return NotFound")]
     public async Task DeleteSnowboard_Twice_ShouldReturnNotFound()
     {
         var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
-    
+
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-    
+
         var deleteRequest = new RestRequest(DeleteSnowboardEndpoint, Method.Delete);
         deleteRequest.AddUrlSegment("id", createdSnowboard.Id);
         var deleteResponse = await restClient.ExecuteAsync(deleteRequest);
 
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var secondDeleteResponse = await restClient.ExecuteAsync(deleteRequest); 
+        var secondDeleteResponse = await restClient.ExecuteAsync(deleteRequest);
 
         secondDeleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
-    
+
     [Fact]
     [DisplayName("Delete Snowboard Via Slug Should Return NotFound")]
     public async Task DeleteSnowboard_ViaSlug_ShouldReturnNotFound()
     {
         var createdSnowboard = await SnowboardTestUtilities.CreateSnowboardAsync(_apiFactory, _output, _createdIds);
-    
+
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
-    
+
         var deleteRequest = new RestRequest(DeleteSnowboardEndpoint, Method.Delete);
         deleteRequest.AddUrlSegment("id", createdSnowboard.Slug);
 

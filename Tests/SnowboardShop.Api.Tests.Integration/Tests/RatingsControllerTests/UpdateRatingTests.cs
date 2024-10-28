@@ -25,6 +25,8 @@ public class UpdateRatingTests : IClassFixture<SnowboardsApiFactory>, IAsyncLife
     public UpdateRatingTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
+        _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());
+        
         _output = output;
     }
 
@@ -46,6 +48,8 @@ public class UpdateRatingTests : IClassFixture<SnowboardsApiFactory>, IAsyncLife
             deleteSnowboardRequest.AddUrlSegment("id", id);
             await restClient.ExecuteAsync(deleteSnowboardRequest);
         }
+        
+        _apiFactory.MocksProvider.ResetAllMocks();
     }
     
     [Theory]
