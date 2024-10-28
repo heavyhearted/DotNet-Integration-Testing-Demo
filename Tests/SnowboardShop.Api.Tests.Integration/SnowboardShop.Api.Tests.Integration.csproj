@@ -29,10 +29,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Tests\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\Helpers\Identity.Api\Identity.Api.csproj" />
       <ProjectReference Include="..\..\SnowboardShop.Api\SnowboardShop.Api.csproj" />
     </ItemGroup>

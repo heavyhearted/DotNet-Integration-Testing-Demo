@@ -11,16 +11,17 @@ using Xunit.Abstractions;
 
 namespace SnowboardShop.Api.Tests.Integration.Tests.RatingsControllerTests;
 
-public class GetAllRatingsTests : IClassFixture<SnowboardsApiFactory>, IAsyncLifetime
+[Collection(ApiFactoryTestCollection.ApiFactoryTestCollectionName)]
+public class GetAllRatingsTests : IAsyncLifetime
 {
     private const string GetAllRatingsEndpoint = Core.ApiEndpoints.Ratings.GetUserRatings;
     private const string DeleteRatingEndpoint = Core.ApiEndpoints.Ratings.DeleteRating;
 
     private readonly ITestOutputHelper _output;
-    private readonly SnowboardsApiFactory _apiFactory;
+    private readonly TestContainersSnowboardsApiFactory _apiFactory;
     private readonly HashSet<Guid> _createdIds = new();
     
-    public GetAllRatingsTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    public GetAllRatingsTests(TestContainersSnowboardsApiFactory apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
         _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());

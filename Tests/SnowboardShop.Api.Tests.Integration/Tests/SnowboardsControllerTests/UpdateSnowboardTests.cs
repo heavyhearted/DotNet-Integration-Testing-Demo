@@ -14,17 +14,18 @@ using Xunit.Abstractions;
 
 namespace SnowboardShop.Api.Tests.Integration.Tests.SnowboardsControllerTests;
 
-public class UpdateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncLifetime
+[Collection(ApiFactoryTestCollection.ApiFactoryTestCollectionName)]
+public class UpdateSnowboardTests : IAsyncLifetime
 {
     private const string UpdateSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Update;
     private const string DeleteSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Delete;
 
     private readonly ITestOutputHelper _output;
-    private readonly SnowboardsApiFactory _apiFactory;
+    private readonly TestContainersSnowboardsApiFactory _apiFactory;
     private readonly CreateSnowboardFaker _snowboardFaker = new();
     private readonly HashSet<Guid> _createdIds = new();
 
-    public UpdateSnowboardTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    public UpdateSnowboardTests(TestContainersSnowboardsApiFactory apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
         _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());

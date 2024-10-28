@@ -1,6 +1,16 @@
 namespace SnowboardShop.Api.Tests.Integration.Tests.RatingsControllerTests;
 
-public class DeleteRatingTests
+//TODO: Implement the test class
+[Collection(ApiFactoryTestCollection.ApiFactoryTestCollectionName)]
+public class DeleteRatingTests : IAsyncLifetime
 {
-    //TODO: Add tests
+    public Task InitializeAsync()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DisposeAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

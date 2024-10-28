@@ -12,7 +12,7 @@ namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 public static class SnowboardTestUtilities
 {
     public static async Task<SnowboardResponse> CreateSnowboardAsync(
-        SnowboardsApiFactory apiFactory,
+        IApiFactory apiFactory,
         ITestOutputHelper output,
         HashSet<Guid> createdIds,
         UserRoles roles = UserRoles.Admin | UserRoles.TrustedMember)
@@ -51,7 +51,7 @@ public static class SnowboardTestUtilities
         rateSnowboardRequest.AddUrlSegment("id", createdSnowboard.Id);
         rateSnowboardRequest.AddJsonBody(rateRequest);
 
-        var rateSnowboardResponse = await restClient.ExecuteAsync(rateSnowboardRequest);
+        var rateSnowboardResponse = await restClient.ExecuteAsync<SnowboardResponse>(rateSnowboardRequest);
         rateSnowboardResponse.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 }
