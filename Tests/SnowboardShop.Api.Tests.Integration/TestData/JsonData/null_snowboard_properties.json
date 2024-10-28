@@ -1,0 +1,9 @@
+[
+  { "snowboardBrand": "Roxy", "yearOfRelease": 2022, "snowboardLineup": null },
+  { "snowboardBrand": "Roxy", "yearOfRelease": null, "snowboardLineup": ["Freestyle", "All-Mountain"] },
+  { "snowboardBrand": "Roxy", "yearOfRelease": null, "snowboardLineup": null },
+  { "snowboardBrand": null, "yearOfRelease": 2022, "snowboardLineup": ["Freestyle", "All-Mountain"] },
+  { "snowboardBrand": null, "yearOfRelease": null, "snowboardLineup": ["Freestyle", "All-Mountain"] },
+  { "snowboardBrand": null, "yearOfRelease": 2022, "snowboardLineup": null },
+  { "snowboardBrand": null, "yearOfRelease": null, "snowboardLineup": null }
+]
