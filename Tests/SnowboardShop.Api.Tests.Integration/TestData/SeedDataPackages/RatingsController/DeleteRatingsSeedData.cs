@@ -1,7 +1,7 @@
 using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Application.Models;
 
-namespace SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages;
+namespace SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController;
 
 public class DeleteRatingsSeedData : IDataSeed<Snowboard>
 {

@@ -3,9 +3,11 @@ using System.Net;
 using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
+using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.RatingsController;
 using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
+using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;
@@ -13,17 +15,17 @@ using Xunit.Abstractions;
 
 namespace SnowboardShop.Api.Tests.Integration.Tests.RatingsControllerTests;
 
-[Collection(ApiFactoryTestCollection.ApiFactoryTestCollectionName)]
+[Collection(DatabaseSeedTestCollection.DatabaseSeedTestCollectionName)]
 public class UpdateRatingTests : IAsyncLifetime
 {
     private const string RateSnowboardEndpoint = Core.ApiEndpoints.Ratings.Rate;
     private const string DeleteRatingEndpoint = Core.ApiEndpoints.Ratings.DeleteRating;
 
     private readonly ITestOutputHelper _output;
-    private readonly SnowboardsApiFactory _apiFactory;
+    private readonly SnowboardsApiFactory<MocksProvider> _apiFactory;
     private readonly HashSet<Guid> _createdIds = new();
     
-    public UpdateRatingTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    public UpdateRatingTests(SnowboardsApiFactory<MocksProvider> apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
         _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());

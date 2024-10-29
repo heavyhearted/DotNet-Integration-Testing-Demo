@@ -1,7 +1,9 @@
+using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
+
 namespace SnowboardShop.Api.Tests.Integration.Tests.RatingsControllerTests;
 
 //TODO: Implement the test class
-[Collection(ApiFactoryTestCollection.ApiFactoryTestCollectionName)]
+[Collection(DatabaseSeedTestCollection.DatabaseSeedTestCollectionName)]
 public class DeleteRatingTests : IAsyncLifetime
 {
     public Task InitializeAsync()

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RestSharp;
+using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Application.Database;
@@ -17,38 +18,25 @@ using IContainer = DotNet.Testcontainers.Containers.IContainer;
 
 namespace SnowboardShop.Api.Tests.Integration.Core.Factories;
 
-public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
+public class SnowboardsApiFactory<TMocksProvider> : WebApplicationFactory<IApiMarker>, IAsyncLifetime, IApiFactory
+    where TMocksProvider : IMocksProvider, new()
 {
     private PostgreSqlContainer _dbContainer = default!;
     private IContainer _identityApiContainer = default!;
 
-    public MocksProvider MocksProvider { get; } = new();
+    public TMocksProvider MocksProvider { get; } = new();
 
     public async Task InitializeAsync()
     {
         await InitializeContainersAsync();
         await _identityApiContainer.StartAsync();
         await _dbContainer.StartAsync();
-
-        var dataSeedPackages = Services.GetServices<IDataSeed>();
-
-        foreach (var dataSeedPackage in dataSeedPackages)
-        {
-            await dataSeedPackage.SeedAsync();
-        }
     }
 
     public new async Task DisposeAsync()
     {
         await _identityApiContainer.StopAsync();
         await _dbContainer.StopAsync();
-
-        var dataSeedPackages = Services.GetServices<IDataSeed>();
-
-        foreach (var dataSeedPackage in dataSeedPackages)
-        {
-            await dataSeedPackage.ClearAsync();
-        }
     }
 
     private async Task InitializeContainersAsync()
@@ -106,7 +94,7 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
 
             foreach (var dataSeedPackage in dataSeedPackages)
             {
-                services.AddSingleton(dataSeedPackage);
+                services.AddSingleton(typeof(IDataSeed), dataSeedPackage);
             }
 
             services.AddSingleton<DataSeedFactory>();

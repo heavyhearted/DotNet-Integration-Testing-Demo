@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using SnowboardShop.Application.Services;
 
-namespace SnowboardShop.Api.Tests.Integration.Core;
+namespace SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 
-public class MocksProvider
+public class MocksProvider : IMocksProvider
 {
     private readonly List<Mock> _allMocks;
     

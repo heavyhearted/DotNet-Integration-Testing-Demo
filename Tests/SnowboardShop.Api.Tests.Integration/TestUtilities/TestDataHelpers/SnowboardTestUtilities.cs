@@ -2,6 +2,7 @@ using System.Net;
 using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
+using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;
@@ -12,7 +13,7 @@ namespace SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 public static class SnowboardTestUtilities
 {
     public static async Task<SnowboardResponse> CreateSnowboardAsync(
-        SnowboardsApiFactory apiFactory,
+        IApiFactory apiFactory,
         ITestOutputHelper output,
         HashSet<Guid> createdIds,
         UserRoles roles = UserRoles.Admin | UserRoles.TrustedMember)

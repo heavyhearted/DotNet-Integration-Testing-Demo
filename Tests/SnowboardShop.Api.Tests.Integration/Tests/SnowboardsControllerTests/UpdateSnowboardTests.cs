@@ -1,11 +1,12 @@
 using System.ComponentModel;
 using System.Net;
 using FluentAssertions;
-using Newtonsoft.Json.Linq;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
+using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
+using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
@@ -14,21 +15,20 @@ using Xunit.Abstractions;
 
 namespace SnowboardShop.Api.Tests.Integration.Tests.SnowboardsControllerTests;
 
-[Collection(ApiFactoryTestCollection.ApiFactoryTestCollectionName)]
+[Collection(ApiSeedTestCollection.ApiSeedTestCollectionName)]
 public class UpdateSnowboardTests : IAsyncLifetime
 {
     private const string UpdateSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Update;
     private const string DeleteSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Delete;
 
     private readonly ITestOutputHelper _output;
-    private readonly SnowboardsApiFactory _apiFactory;
+    private readonly SnowboardsApiFactory<EmptyMocksProvider> _apiFactory;
     private readonly CreateSnowboardFaker _snowboardFaker = new();
     private readonly HashSet<Guid> _createdIds = new();
 
-    public UpdateSnowboardTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    public UpdateSnowboardTests(SnowboardsApiFactory<EmptyMocksProvider> apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
-        _apiFactory.MocksProvider.SetupUserContextService(Guid.NewGuid());
         
         _output = output;
     }

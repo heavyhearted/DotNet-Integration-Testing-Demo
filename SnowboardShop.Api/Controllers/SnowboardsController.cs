@@ -48,6 +48,7 @@ public class SnowboardsController : ControllerBase
     [HttpGet(ApiEndpoints.Snowboards.GetAll)]
     public async Task<IActionResult> GetAll(CancellationToken token)
     {
+        var userId = HttpContext.User;
         var snowboards = await _snowboardService.GetAllAsync(token);
 
         var snowboardsResponse = snowboards.MapToResponse();
