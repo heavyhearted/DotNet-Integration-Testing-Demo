@@ -4,9 +4,9 @@ public interface IDataSeed
 {
     public string Name { get; }
 
-    Task SeedAsync(CancellationToken token = default);
+    Task SeedAsync();
 
-    Task ClearAsync(CancellationToken token = default);
+    Task ClearAsync();
 }
 
 public interface IDataSeed<TModel> : IDataSeed

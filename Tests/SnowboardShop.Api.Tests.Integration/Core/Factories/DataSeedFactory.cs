@@ -11,12 +11,19 @@ public class DataSeedFactory
         _dataSeedPackages = dataSeedPackages;
     }
     
-    public IDataSeed<TModel> GetDataSeed<TModel>(string name) where TModel : class
+    // This generic method allows to get a specific data seed package by its name.
+    public TDataSeed GetDataSeed<TDataSeed>(string name) where TDataSeed : IDataSeed
     {
         var dataSeed = _dataSeedPackages
-            .OfType<IDataSeed<TModel>>()
+            .OfType<TDataSeed>()
             .First(x => x.Name == name);
 
         return dataSeed;
+    }
+    
+    // New List is required to avoid modifying the original list which is shared between tests.
+    public List<IDataSeed> GetAllDataSeeds()
+    {
+        return new List<IDataSeed>(_dataSeedPackages); 
     }
 }

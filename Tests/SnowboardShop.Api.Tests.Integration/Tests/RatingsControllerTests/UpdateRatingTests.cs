@@ -114,7 +114,6 @@ public class UpdateRatingTests : IAsyncLifetime
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
-    
 
     [Fact]
     [DisplayName("Update Rating Without Authentication Should Return Unauthorized")]
