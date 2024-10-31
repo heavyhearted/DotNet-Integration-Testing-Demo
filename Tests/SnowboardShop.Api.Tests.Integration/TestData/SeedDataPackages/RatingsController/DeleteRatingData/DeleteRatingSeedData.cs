@@ -1,5 +1,3 @@
-using Bogus;
-using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Application.Models;
 using SnowboardShop.Application.Repositories;
 using static SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController.DeleteRatingData.DeleteRatingConstants;
@@ -19,7 +17,7 @@ public class DeleteRatingSeedData : RatingsDataSeedBase
     {
         var snowboardRatingsPerUser = new Dictionary<Guid, List<SnowboardRating>>();
         
-        snowboardRatingsPerUser.Add(ValidRatingUserId, new List<SnowboardRating>
+        snowboardRatingsPerUser.Add(DeleteSingleRatingUserId, new List<SnowboardRating>
         {
             new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2003", Rating = 1 }
         });
