@@ -97,6 +97,18 @@ public class GetAllRatingsTests : IAsyncLifetime
     }
     
     [Fact]
+    [DisplayName("Get All Ratings With Invalid Authentication Should Return Unauthorized")]
+     public async Task GetAllRatingsWithInvalidAuthentication_ShouldReturnUnauthorized()
+     {
+         var restClient = _apiFactory.CreateRestClient("invalid_token", _output);
+         
+         var request = new RestRequest(GetAllRatingsEndpoint);
+         var response = await restClient.ExecuteAsync<List<SnowboardRatingsResponse>>(request);
+
+         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+     }
+    
+    [Fact]
     [DisplayName("Get All Ratings When No Ratings Exist Should Return Empty List")]
     public async Task GetAllRatings_WhenNoRatingsExist_ShouldReturnEmptyList()
     {

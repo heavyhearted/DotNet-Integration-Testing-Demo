@@ -7,7 +7,7 @@ using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
 using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
-using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
+using SnowboardShop.Api.Tests.Integration.TestUtilities;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;

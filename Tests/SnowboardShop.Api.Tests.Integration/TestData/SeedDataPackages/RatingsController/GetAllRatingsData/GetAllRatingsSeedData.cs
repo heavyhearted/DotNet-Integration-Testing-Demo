@@ -1,5 +1,3 @@
-using Bogus;
-using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Application.Models;
 using SnowboardShop.Application.Repositories;
 using static SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController.GetAllRatingsData.

@@ -10,7 +10,7 @@ public abstract class RatingsDataSeedBase : IDataSeed<SnowboardRating>
     private readonly IRatingRepository _ratingRepository;
     private readonly ISnowboardRepository _snowboardRepository;
     private readonly Dictionary<Guid, List<SnowboardRating>> _allData;
-    private readonly Faker _faker = new();
+    private readonly Faker _snowboardFaker = new();
     private readonly List<Guid> _snowboardIdsToClear = new();
 
     public RatingsDataSeedBase(IRatingRepository ratingRepository, ISnowboardRepository snowboardRepository)
@@ -44,8 +44,8 @@ public abstract class RatingsDataSeedBase : IDataSeed<SnowboardRating>
                 var snowboard = new Snowboard
                 {
                     Id = rating.SnowboardId,
-                    SnowboardBrand = _faker.Company.CompanyName(),
-                    YearOfRelease = _faker.Random.Int(1965, 2025),
+                    SnowboardBrand = _snowboardFaker.Company.CompanyName(),
+                    YearOfRelease = _snowboardFaker.Random.Int(1965, 2025),
                     SnowboardLineup = ["Maverick LTD"]
                 };
                 

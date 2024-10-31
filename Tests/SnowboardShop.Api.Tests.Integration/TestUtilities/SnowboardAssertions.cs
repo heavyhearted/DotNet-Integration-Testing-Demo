@@ -1,8 +1,7 @@
 using FluentAssertions;
-using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;
 
-namespace SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
+namespace SnowboardShop.Api.Tests.Integration.TestUtilities;
 
 public static class SnowboardAssertions
 {

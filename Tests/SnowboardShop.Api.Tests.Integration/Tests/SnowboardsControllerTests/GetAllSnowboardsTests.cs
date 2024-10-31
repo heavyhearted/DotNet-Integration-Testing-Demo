@@ -5,7 +5,7 @@ using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
 using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
-using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
+using SnowboardShop.Api.Tests.Integration.TestUtilities;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Responses;
 using Xunit.Abstractions;
