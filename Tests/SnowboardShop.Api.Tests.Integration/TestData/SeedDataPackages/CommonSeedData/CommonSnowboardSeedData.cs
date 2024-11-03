@@ -10,8 +10,8 @@ public class CommonSnowboardSeedData : SnowboardsDataSeedBase
 {
     private readonly Faker _snowboardFaker = new();
 
-    public CommonSnowboardSeedData(ISnowboardRepository snowboardRepository)
-        : base(snowboardRepository)
+    public CommonSnowboardSeedData(ISnowboardRepository snowboardRepository, IRatingRepository ratingRepository)
+        : base(snowboardRepository, ratingRepository)
     {
     }
 

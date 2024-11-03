@@ -7,11 +7,13 @@ namespace SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages;
 public abstract class SnowboardsDataSeedBase : IDataSeed<Snowboard>
 {
     private readonly ISnowboardRepository _snowboardRepository;
+    private readonly IRatingRepository _ratingRepository;
     private readonly Dictionary<Guid, List<Snowboard>> _allData;
 
-    protected SnowboardsDataSeedBase(ISnowboardRepository snowboardRepository)
+    protected SnowboardsDataSeedBase(ISnowboardRepository snowboardRepository, IRatingRepository ratingRepository)
     {
         _snowboardRepository = snowboardRepository;
+        _ratingRepository = ratingRepository;
         _allData = CreateData();
     }
 
@@ -50,6 +52,9 @@ public abstract class SnowboardsDataSeedBase : IDataSeed<Snowboard>
         {
             foreach (var snowboard in snowboardPair.Value)
             {
+                await _ratingRepository.DeleteRatingAsync(snowboard.Id,
+                    snowboardPair.Key);
+                
                 await _snowboardRepository.DeleteByIdAsync(
                     snowboard.Id);
             }
