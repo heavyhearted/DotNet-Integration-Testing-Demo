@@ -12,6 +12,7 @@ public abstract class RatingsDataSeedBase : IDataSeed<SnowboardRating>
     private readonly Dictionary<Guid, List<SnowboardRating>> _allData;
     private readonly Faker _snowboardFaker = new();
     private readonly List<Guid> _snowboardIdsToClear = new();
+    public const string AutoGen = null!; // Placeholder for the Slug property in SnowboardRating
 
     protected RatingsDataSeedBase(IRatingRepository ratingRepository, ISnowboardRepository snowboardRepository)
     {

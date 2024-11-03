@@ -20,11 +20,11 @@ public class GetAllRatingsSeedData : RatingsDataSeedBase
 
         snowboardRatingsPerUser.Add(ValidRatingsUserId, new List<SnowboardRating>
         {
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2003", Rating = 1 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2004", Rating = 2 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2005", Rating = 3 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2006", Rating = 4 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2007", Rating = 5 }
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 1 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 2 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 3 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 4 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 5 }
         });
 
         return snowboardRatingsPerUser;

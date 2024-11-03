@@ -20,17 +20,17 @@ public class DeleteRatingSeedData : RatingsDataSeedBase
 
         snowboardRatingsPerUser.Add(DeleteSingleRatingUserId, new List<SnowboardRating>
         {
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2003", Rating = 1 }
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 1 }
         });
 
 
         snowboardRatingsPerUser.Add(DeleteSingleRatingFromListUserId, new List<SnowboardRating>
         {
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2003", Rating = 1 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2004", Rating = 2 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2005", Rating = 3 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2006", Rating = 4 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2007", Rating = 5 }
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 1 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 2 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 3 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 4 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 5 }
         });
 
 
@@ -38,11 +38,11 @@ public class DeleteRatingSeedData : RatingsDataSeedBase
         
         snowboardRatingsPerUser.Add(DeleteMultipleRatingsUserId, new List<SnowboardRating>
         {
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2021", Rating = 1 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2020", Rating = 2 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2022", Rating = 3 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2024", Rating = 4 },
-            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2023", Rating = 5 }
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 1 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 2 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 3 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 4 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = AutoGen, Rating = 5 }
         });
 
 
