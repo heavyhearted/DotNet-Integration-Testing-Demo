@@ -36,6 +36,15 @@ public class DeleteRatingSeedData : RatingsDataSeedBase
 
 
         snowboardRatingsPerUser.Add(MissingRatingUserId, new List<SnowboardRating>());
+        
+        snowboardRatingsPerUser.Add(DeleteMultipleRatingsUserId, new List<SnowboardRating>
+        {
+            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2021", Rating = 1 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2020", Rating = 2 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2022", Rating = 3 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2024", Rating = 4 },
+            new() { SnowboardId = Guid.NewGuid(), Slug = "slug-2023", Rating = 5 }
+        });
 
 
         return snowboardRatingsPerUser;

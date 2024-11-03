@@ -107,6 +107,40 @@ public class DeleteRatingTests : IAsyncLifetime
         getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         getResponse.Data.Should().NotContain(r => r.SnowboardId == ratingToDelete.SnowboardId);
     }
+    
+    [Fact]
+    [DisplayName("Delete Multiple Ratings for User One by One and Verify Remaining Ratings")]
+    public async Task DeleteMultipleRatings_ForUserOneByOne_VerifyRemainingRatings()
+    {
+        _apiFactory.MocksProvider.SetupUserContextService(DeleteMultipleRatingsUserId);
+
+        var dataSeedPackage = _dataSeedFactory.GetDataSeed<DeleteRatingSeedData>(nameof(DeleteRatingSeedData));
+        var ratings = dataSeedPackage.GetAllDataForUserId(DeleteMultipleRatingsUserId);
+
+        ratings.Count.Should().Be(5);
+
+        var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
+
+        foreach (var rating in ratings.Take(2))
+        {
+            var deleteRequest = new RestRequest(DeleteRatingEndpoint, Method.Delete);
+            deleteRequest.AddUrlSegment("id", rating.SnowboardId.ToString());
+
+            var deleteResponse = await restClient.ExecuteAsync(deleteRequest);
+            deleteResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        var getRequest = new RestRequest(GetUserRatingsEndpoint);
+        var getResponse = await restClient.ExecuteAsync<List<SnowboardRatingsResponse>>(getRequest);
+
+        getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        getResponse.Data!.Count.Should().Be(3);
+
+        var remainingRatings = ratings.Skip(2).Select(r => r.SnowboardId).ToList();
+        getResponse.Data.Select(r => r.SnowboardId).Should().BeEquivalentTo(remainingRatings);
+    }
+
 
     [Fact]
     [DisplayName("Delete Rating When Snowboard Id Does Not Exist Should Fail")]
@@ -141,7 +175,6 @@ public class DeleteRatingTests : IAsyncLifetime
     }
 
     
-    //TODO - Fix this test
     [Fact]
     [DisplayName("Delete Rating When Snowboard Has No Rating Should Return Not Found")]
     public async Task DeleteRating_WhenSnowboardHasNoRating_ShouldReturnNotFound()
