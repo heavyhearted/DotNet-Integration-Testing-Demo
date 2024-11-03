@@ -8,11 +8,8 @@ using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController.GetAllRatingsData;
-using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.RatingsController;
 using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
-using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
-using SnowboardShop.Application.Models;
-using SnowboardShop.Contracts.Requests;
+
 using SnowboardShop.Contracts.Responses;
 using Xunit.Abstractions;
 using static SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController.GetAllRatingsData.GetAllRatingsConstants;

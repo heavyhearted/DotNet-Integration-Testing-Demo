@@ -7,10 +7,12 @@ using SnowboardShop.Api.Tests.Integration.Core.Factories;
 using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
+using SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.CommonSeedData;
 using SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController.DeleteRatingData;
 using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
 using SnowboardShop.Contracts.Responses;
 using Xunit.Abstractions;
+using static SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.CommonSeedData.CommonSnowboardConstants;
 using static SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController.DeleteRatingData.
     DeleteRatingConstants;
 
@@ -138,16 +140,18 @@ public class DeleteRatingTests : IAsyncLifetime
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
+    
+    //TODO - Fix this test
     [Fact]
     [DisplayName("Delete Rating When Snowboard Has No Rating Should Return Not Found")]
     public async Task DeleteRating_WhenSnowboardHasNoRating_ShouldReturnNotFound()
     {
-        _apiFactory.MocksProvider.SetupUserContextService(MissingRatingUserId);
+        _apiFactory.MocksProvider.SetupUserContextService(ValidCommonSnowboardUserId);
         
         var restClient = await _apiFactory.CreateAuthenticatedRestClientAsync(_output);
         
-        var deleteRatingSeedData = _dataSeedFactory.GetDataSeed<DeleteRatingSeedData>(nameof(DeleteRatingSeedData));
-        var snowboardId = await deleteRatingSeedData.SeedSnowboardWithoutRatingAsync(MissingRatingUserId);
+        var snowboardSeedData = _dataSeedFactory.GetDataSeed<CommonSnowboardSeedData>(nameof(CommonSnowboardSeedData));
+        var snowboardId = snowboardSeedData.GetAllDataForUserId(ValidCommonSnowboardUserId).Single().Id;
         
         var deleteRequest = new RestRequest(DeleteRatingEndpoint, Method.Delete);
         deleteRequest.AddUrlSegment("id", snowboardId.ToString());

@@ -3,7 +3,7 @@ using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Application.Models;
 using SnowboardShop.Application.Repositories;
 
-namespace SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages.RatingsController;
+namespace SnowboardShop.Api.Tests.Integration.TestData.SeedDataPackages;
 
 public abstract class RatingsDataSeedBase : IDataSeed<SnowboardRating>
 {
@@ -13,7 +13,7 @@ public abstract class RatingsDataSeedBase : IDataSeed<SnowboardRating>
     private readonly Faker _snowboardFaker = new();
     private readonly List<Guid> _snowboardIdsToClear = new();
 
-    public RatingsDataSeedBase(IRatingRepository ratingRepository, ISnowboardRepository snowboardRepository)
+    protected RatingsDataSeedBase(IRatingRepository ratingRepository, ISnowboardRepository snowboardRepository)
     {
         _ratingRepository = ratingRepository;
         _snowboardRepository = snowboardRepository;
