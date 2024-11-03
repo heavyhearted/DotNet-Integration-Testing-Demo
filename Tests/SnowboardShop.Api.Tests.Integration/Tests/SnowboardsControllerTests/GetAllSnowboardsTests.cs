@@ -3,25 +3,29 @@ using System.Net;
 using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
-using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
+using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
+using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
+using SnowboardShop.Api.Tests.Integration.TestUtilities;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Responses;
 using Xunit.Abstractions;
 
 namespace SnowboardShop.Api.Tests.Integration.Tests.SnowboardsControllerTests;
 
-public class GetAllSnowboardsTests : IClassFixture<SnowboardsApiFactory>, IAsyncLifetime
+[Collection(ApiSeedTestCollection.ApiSeedTestCollectionName)]
+public class GetAllSnowboardsTests : IAsyncLifetime
 {
     private const string GetAllSnowboardsEndpoint = Core.ApiEndpoints.Snowboards.GetAll;
     private const string DeleteSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Delete;
 
     private readonly ITestOutputHelper _output;
-    private readonly SnowboardsApiFactory _apiFactory;
+    private readonly SnowboardsApiFactory<EmptyMocksProvider> _apiFactory;
     private readonly HashSet<Guid> _createdIds = new();
     
-    public GetAllSnowboardsTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    public GetAllSnowboardsTests(SnowboardsApiFactory<EmptyMocksProvider> apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
+        
         _output = output;
     }
     
@@ -38,6 +42,8 @@ public class GetAllSnowboardsTests : IClassFixture<SnowboardsApiFactory>, IAsync
 
             await restClient.DeleteAsync(request);
         }
+        
+        _apiFactory.MocksProvider.ResetAllMocks();
     }
     
     [Fact]

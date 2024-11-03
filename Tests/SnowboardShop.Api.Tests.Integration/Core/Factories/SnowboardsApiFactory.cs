@@ -1,6 +1,5 @@
-using System.ComponentModel;
+using System.Reflection;
 using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
 using Identity.Api.FakeVault.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -8,7 +7,9 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RestSharp;
+using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
+using SnowboardShop.Api.Tests.Integration.TestData.Common.Contracts;
 using SnowboardShop.Application.Database;
 using Testcontainers.PostgreSql;
 using Xunit.Abstractions;
@@ -17,12 +18,28 @@ using IContainer = DotNet.Testcontainers.Containers.IContainer;
 
 namespace SnowboardShop.Api.Tests.Integration.Core.Factories;
 
-public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLifetime
+public class SnowboardsApiFactory<TMocksProvider> : WebApplicationFactory<IApiMarker>, IAsyncLifetime, IApiFactory
+    where TMocksProvider : IMocksProvider, new()
 {
-    private readonly PostgreSqlContainer _dbContainer;
-    private IContainer _identityApiContainer;
+    private PostgreSqlContainer _dbContainer = default!;
+    private IContainer _identityApiContainer = default!;
 
-    public SnowboardsApiFactory()
+    public TMocksProvider MocksProvider { get; } = new();
+
+    public async Task InitializeAsync()
+    {
+        await InitializeContainersAsync();
+        await _identityApiContainer.StartAsync();
+        await _dbContainer.StartAsync();
+    }
+
+    public new async Task DisposeAsync()
+    {
+        await _identityApiContainer.StopAsync();
+        await _dbContainer.StopAsync();
+    }
+
+    private async Task InitializeContainersAsync()
     {
         DotNetEnv.Env.Load("Helpers/Identity.Api/FakeVault/DemoSecrets/demo.env");
         var certificatePassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
@@ -39,31 +56,18 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
             .WithDockerfileDirectory(CommonDirectoryPath.GetSolutionDirectory(), "Helpers/Identity.Api")
             .WithDockerfile("Dockerfile")
             .Build();
-        
-        identityApiImage.CreateAsync().GetAwaiter().GetResult();
+
+        await identityApiImage.CreateAsync();
 
         // Ensure the image is created asynchronously before being used
         _identityApiContainer = new ContainerBuilder()
-            .WithImage(identityApiImage)  // Use the built Identity API image
-            .WithPortBinding(5002, true)  // HTTP port
-            .WithPortBinding(5003, true)  // HTTPS port
+            .WithImage(identityApiImage) // Use the built Identity API image
+            .WithPortBinding(5002, true) // HTTP port
+            .WithPortBinding(5003, true) // HTTPS port
             .WithEnvironment("ASPNETCORE_ENVIRONMENT", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"))
             .WithEnvironment("CERTIFICATE_PASSWORD", certificatePassword)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5003))
             .Build();
-    }
-
-
-    public async Task InitializeAsync()
-    {
-        await _identityApiContainer.StartAsync();
-        await _dbContainer.StartAsync();
-    }
-
-    public new async Task DisposeAsync()
-    {
-        await _identityApiContainer.StopAsync();
-        await _dbContainer.StopAsync();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -80,6 +84,22 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
             services.RemoveAll(typeof(IDbConnectionFactory));
             services.AddSingleton<IDbConnectionFactory>(_ =>
                 new NpgsqlConnectionFactory(_dbContainer.GetConnectionString()));
+
+
+            // Register all data seed packages
+            var dataSeedPackages = Assembly.GetAssembly(typeof(IDataSeed))!
+                .GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && t.GetInterfaces().Contains(typeof(IDataSeed)))
+                .ToList();
+
+            foreach (var dataSeedPackage in dataSeedPackages)
+            {
+                services.AddSingleton(typeof(IDataSeed), dataSeedPackage);
+            }
+
+            services.AddSingleton<DataSeedFactory>();
+
+            MocksProvider.RegisterMocks(services);
         });
     }
 
@@ -111,20 +131,20 @@ public class SnowboardsApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
     }
 
     public async Task<RestClient> CreateAuthenticatedRestClientAsync(
-        UserRoles roles = UserRoles.Admin | UserRoles.TrustedMember, 
+        UserRoles roles = UserRoles.Admin | UserRoles.TrustedMember,
         ITestOutputHelper? testOutputHelper = default)
     {
         var client = CreateRestClient(testOutputHelper);
 
         var externalPort = _identityApiContainer.GetMappedPublicPort(5003);
         var tokenService = Services.GetRequiredService<IAccessTokenService>();
-        var token = await tokenService.GetTokenAsync(roles); 
-        
+        var token = await tokenService.GetTokenAsync(roles);
+
         client.AddDefaultHeader("Authorization", $"Bearer {token}");
 
         return client;
     }
-    
+
     public async Task<RestClient> CreateAuthenticatedRestClientAsync(ITestOutputHelper? testOutputHelper = default)
     {
         return await CreateAuthenticatedRestClientAsync(UserRoles.Admin | UserRoles.TrustedMember, testOutputHelper);

@@ -33,11 +33,9 @@ public class SnowboardsController : ControllerBase
     [HttpGet(ApiEndpoints.Snowboards.Get)]
     public async Task<IActionResult> Get([FromRoute] string idOrSlug, CancellationToken token)
     {
-        var userId = HttpContext.GetUserId();
-        
         var snowboard = Guid.TryParse(idOrSlug, out var id)
-            ? await _snowboardService.GetByIdAsync(id, userId, token)
-            : await _snowboardService.GetBySlugAsync(idOrSlug, userId, token);
+            ? await _snowboardService.GetByIdAsync(id, token)
+            : await _snowboardService.GetBySlugAsync(idOrSlug, token);
         if (snowboard is null)
         {
             return NotFound();
@@ -50,9 +48,8 @@ public class SnowboardsController : ControllerBase
     [HttpGet(ApiEndpoints.Snowboards.GetAll)]
     public async Task<IActionResult> GetAll(CancellationToken token)
     {
-        var userId = HttpContext.GetUserId();
-        
-        var snowboards = await _snowboardService.GetAllAsync(userId, token);
+        var userId = HttpContext.User;
+        var snowboards = await _snowboardService.GetAllAsync(token);
 
         var snowboardsResponse = snowboards.MapToResponse();
 
@@ -65,8 +62,7 @@ public class SnowboardsController : ControllerBase
         CancellationToken token)
     {
         var snowboard = request.MapToSnowboard(id);
-        var userId = HttpContext.GetUserId();
-        var updatedSnowboard = await _snowboardService.UpdateAsync(snowboard, userId, token);
+        var updatedSnowboard = await _snowboardService.UpdateAsync(snowboard, token);
         if (updatedSnowboard is null)
         {
             return NotFound();

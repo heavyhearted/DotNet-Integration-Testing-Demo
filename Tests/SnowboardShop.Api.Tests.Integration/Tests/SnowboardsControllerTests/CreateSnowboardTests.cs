@@ -4,9 +4,11 @@ using System.Text.Json;
 using FluentAssertions;
 using RestSharp;
 using SnowboardShop.Api.Tests.Integration.Core.Factories;
+using SnowboardShop.Api.Tests.Integration.Core.MockProviders;
 using SnowboardShop.Api.Tests.Integration.Services.ApiAuthentication;
 using SnowboardShop.Api.Tests.Integration.TestData.TheoryData.SnowboardsController;
-using SnowboardShop.Api.Tests.Integration.TestUtilities.AssertionHelpers;
+using SnowboardShop.Api.Tests.Integration.Tests.TestCollections;
+using SnowboardShop.Api.Tests.Integration.TestUtilities;
 using SnowboardShop.Api.Tests.Integration.TestUtilities.TestDataHelpers;
 using SnowboardShop.Contracts.Requests;
 using SnowboardShop.Contracts.Responses;
@@ -14,19 +16,21 @@ using Xunit.Abstractions;
 
 namespace SnowboardShop.Api.Tests.Integration.Tests.SnowboardsControllerTests;
 
-public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncLifetime
+[Collection(ApiSeedTestCollection.ApiSeedTestCollectionName)]
+public class CreateSnowboardTests : IAsyncLifetime
 {
     private const string CreateSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Create;
     private const string DeleteSnowboardEndpoint = Core.ApiEndpoints.Snowboards.Delete;
 
     private readonly ITestOutputHelper _output;
-    private readonly SnowboardsApiFactory _apiFactory;
+    private readonly SnowboardsApiFactory<EmptyMocksProvider> _apiFactory;
     private readonly CreateSnowboardFaker _snowboardFaker = new();
     private readonly HashSet<Guid> _createdIds = new();
 
-    public CreateSnowboardTests(SnowboardsApiFactory apiFactory, ITestOutputHelper output)
+    public CreateSnowboardTests(SnowboardsApiFactory<EmptyMocksProvider> apiFactory, ITestOutputHelper output)
     {
         _apiFactory = apiFactory;
+        
         _output = output;
     }
 
@@ -43,6 +47,8 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
 
             await restClient.DeleteAsync(request);
         }
+        
+        _apiFactory.MocksProvider.ResetAllMocks();
     }
 
     [Theory]
@@ -100,6 +106,7 @@ public class CreateSnowboardTests : IClassFixture<SnowboardsApiFactory>, IAsyncL
         firstRequest.AddJsonBody(snowboardRequest);
 
         var firstResponse = await restClient.ExecutePostAsync<SnowboardResponse>(firstRequest);
+        _createdIds.Add(firstResponse.Data!.Id);
 
         firstResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 

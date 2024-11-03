@@ -9,12 +9,14 @@ public class SnowboardService : ISnowboardService
     private readonly ISnowboardRepository _snowboardRepository;
     private readonly IValidator<Snowboard> _snowboardValidator;
     private readonly IRatingRepository _ratingRepository;
+    private readonly IUserContextService _userContextService;
 
-    public SnowboardService(ISnowboardRepository snowboardRepository, IValidator<Snowboard> snowboardValidator, IRatingRepository ratingRepository)
+    public SnowboardService(ISnowboardRepository snowboardRepository, IValidator<Snowboard> snowboardValidator, IRatingRepository ratingRepository, IUserContextService userContextService)
     {
         _snowboardRepository = snowboardRepository;
         _snowboardValidator = snowboardValidator;
         _ratingRepository = ratingRepository;
+        _userContextService = userContextService;
     }
 
     public async Task<bool> CreateAsync(Snowboard snowboard, CancellationToken token = default)
@@ -23,22 +25,22 @@ public class SnowboardService : ISnowboardService
         return await _snowboardRepository.CreateAsync(snowboard, token);
     }
 
-    public Task<Snowboard?> GetByIdAsync(Guid id, Guid? userid = default, CancellationToken token = default)
+    public Task<Snowboard?> GetByIdAsync(Guid id, CancellationToken token = default)
     {
-        return _snowboardRepository.GetByIdAsync(id, userid, token);
+        return _snowboardRepository.GetByIdAsync(id, _userContextService.UserId, token);
     }
 
-    public Task<Snowboard?> GetBySlugAsync(string slug, Guid? userid = default, CancellationToken token = default)
+    public Task<Snowboard?> GetBySlugAsync(string slug, CancellationToken token = default)
     {
-        return _snowboardRepository.GetBySlugAsync(slug, userid, token);
+        return _snowboardRepository.GetBySlugAsync(slug, _userContextService.UserId, token);
     }
 
-    public Task<IEnumerable<Snowboard>> GetAllAsync(Guid? userid = default, CancellationToken token = default)
+    public Task<IEnumerable<Snowboard>> GetAllAsync(CancellationToken token = default)
     {
-        return _snowboardRepository.GetAllAsync(userid, token);
+        return _snowboardRepository.GetAllAsync(_userContextService.UserId, token);
     }
 
-    public async Task<Snowboard?> UpdateAsync(Snowboard snowboard, Guid? userid = default, CancellationToken token = default)
+    public async Task<Snowboard?> UpdateAsync(Snowboard snowboard, CancellationToken token = default)
     {
         await _snowboardValidator.ValidateAndThrowAsync(snowboard, cancellationToken: token);
         var snowboardExists = await _snowboardRepository.ExistsByIdAsync(snowboard.Id);
@@ -49,14 +51,14 @@ public class SnowboardService : ISnowboardService
 
         await _snowboardRepository.UpdateAsync(snowboard, token);
         
-        if (!userid.HasValue)
+        if (!_userContextService.UserId.HasValue)
         {
             var rating = await _ratingRepository.GetRatingAsync(snowboard.Id, token);
             snowboard.Rating = rating;
             return snowboard;
         }
         
-        var ratings = await _ratingRepository.GetRatingAsync(snowboard.Id, userid.Value, token);
+        var ratings = await _ratingRepository.GetRatingAsync(snowboard.Id, _userContextService.UserId.Value, token);
         snowboard.Rating = ratings.Rating;
         snowboard.UserRating = ratings.UserRating;
         

@@ -22,8 +22,7 @@ public class RatingsController : ControllerBase
     public async Task<IActionResult> RateSnowboard([FromRoute] Guid id,
         [FromBody] RateSnowboardRequest request, CancellationToken token)
     {
-        var userId = HttpContext.GetUserId();
-        return await _ratingService.RateSnowboardAsync(id, request.Rating, userId!.Value, token)
+        return await _ratingService.RateSnowboardAsync(id, request.Rating, token)
             ? Ok(new { Message = "Rating submitted successfully", SnowboardId = id, Rating = request.Rating })
             : NotFound(new { Message = "The requested snowboard was not found" });
     }
@@ -34,8 +33,7 @@ public class RatingsController : ControllerBase
     public async Task<IActionResult> DeleteRating([FromRoute] Guid id,
         CancellationToken token)
     {
-        var userId = HttpContext.GetUserId();
-        return await _ratingService.DeleteRatingAsync(id, userId!.Value, token)
+        return await _ratingService.DeleteRatingAsync(id, token)
             ? Ok(new { Message = "Rating deleted successfully"})
             : NotFound(new { Message = "The requested snowboard was not found" });
     }
@@ -44,8 +42,7 @@ public class RatingsController : ControllerBase
     [HttpGet(ApiEndpoints.Ratings.GetUserRatings)]
     public async Task<IActionResult> GetUserRatings(CancellationToken token = default)
     {
-        var userId = HttpContext.GetUserId();
-        var ratings = await _ratingService.GetRatingsForUserAsync(userId!.Value, token);
+        var ratings = await _ratingService.GetRatingsForUserAsync(token);
         var ratingsResponse = ratings.MapToResponse();
         return Ok(ratingsResponse);
     }
