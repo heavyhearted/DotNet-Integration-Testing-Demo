@@ -22,6 +22,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1F93A97B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowboardShop.Api.Tests.Integration", "Tests\SnowboardShop.Api.Tests.Integration\SnowboardShop.Api.Tests.Integration.csproj", "{97181C90-452F-4BA8-880D-564FDDDA6FAE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{05DFCEE5-C4D6-495D-A138-93F50508E73C}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthenticationHelper", "AuthenticationHelper", "{9DAF9D2A-5C7B-4974-9069-77658B232916}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PostmanCollection", "PostmanCollection", "{AF58EC90-56D4-4FA0-9B91-B35AA1B4FE16}"
+	ProjectSection(SolutionItems) = preProject
+		Helpers\SnowboardShopApi.postman_collection.json = Helpers\SnowboardShopApi.postman_collection.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,7 +62,9 @@ Global
 		{97181C90-452F-4BA8-880D-564FDDDA6FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{559F6644-DCA1-4C23-A994-959638D2B027} = {BC184E43-AADD-4F57-92F6-C45FFA576EF2}
 		{97181C90-452F-4BA8-880D-564FDDDA6FAE} = {1F93A97B-36D7-4FEA-954B-58AF34A628CB}
+		{9DAF9D2A-5C7B-4974-9069-77658B232916} = {BC184E43-AADD-4F57-92F6-C45FFA576EF2}
+		{AF58EC90-56D4-4FA0-9B91-B35AA1B4FE16} = {BC184E43-AADD-4F57-92F6-C45FFA576EF2}
+		{559F6644-DCA1-4C23-A994-959638D2B027} = {9DAF9D2A-5C7B-4974-9069-77658B232916}
 	EndGlobalSection
 EndGlobal

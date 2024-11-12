@@ -1,0 +1,585 @@
+{
+	"info": {
+		"_postman_id": "a4b47df2-74c8-48f9-81ba-c58eafda6fbe",
+		"name": "SnowboardShopApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5907709"
+	},
+	"item": [
+		{
+			"name": "Identity",
+			"item": [
+				{
+					"name": "Token Generator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Set token in collection variable\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.collectionVariables.set(\"authToken\", jsonData.accessToken);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userid\": \"d8566de3-b1a6-4a9b-b842-8e3887a82e41\",\r\n    \"email\": \"dessy.test@snowboardshop.com\",\r\n    \"customClaims\": {\r\n         \"admin\": true,\r\n         \"trusted_member\": true\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5003/token",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5003",
+							"path": [
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Snowboards",
+			"item": [
+				{
+					"name": "Create Snowboard",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// List of snowboard brands",
+									"const brands = [\"Burton\", \"Never Summer\", \"CAPiTA\", \"GNU\", \"Salomon\", \"Lib Tech\", \"Roxy\", \"Bataleon\", \"Nitro\", \"Rossignol\", \"Nidecker\", \"K2\", \"Whitespace\", \"Jones\", \"Rome\", \"Flow\"];",
+									"",
+									"// Generate a unique random snowboard brand and save as variable",
+									"const randomBrand = brands[Math.floor(Math.random() * brands.length)];",
+									"pm.collectionVariables.set(\"SnowboardBrand\", `${randomBrand}-${Math.floor(Math.random() * 1000)}`);",
+									"",
+									"// Generate a random release year between 1965 and the next calendar year",
+									"const minYear = 1965;",
+									"const maxYear = new Date().getUTCFullYear() + 1;",
+									"const randomYear = Math.floor(Math.random() * (maxYear - minYear)) + minYear;",
+									"pm.collectionVariables.set(\"YearOfRelease\", randomYear);",
+									"",
+									"// List of possible snowboard lineup names",
+									"const snowboardLineupList = [",
+									"    \"Custom\", \"Process\", \"Deep Thinker\", \"Family Tree Hometown Hero\", \"Kilroy Twin\", \"Flight Attendant\",",
+									"    \"Free Thinker\", \"Name Dropper\", \"Proto Slinger\", \"West Bound\", \"Harpoon\", \"Maverix\", \"Swift\",",
+									"    \"Shaper Twin\", \"Big Gun\", \"Defenders of Awesome\", \"Super DOA\", \"Mercury\", \"Paradise\", ",
+									"    \"Birds of a Feather\", \"The Outsiders\", \"Riders Choice\", \"Gremlin\", \"Head Space\", \"Mullair\", ",
+									"    \"Money\", \"Ravish\", \"Barrett\", \"Assassin\", \"Huck Knife\", \"Dancehaul\", \"Super 8\", \"Craft\", ",
+									"    \"Pulse\", \"Sleepwalker\", \"T.Rice Pro\", \"Skate Banana\", \"Orca\", \"Cold Brew\", \"Box Scratcher\", ",
+									"    \"Lost Retro Ripper\", \"Dynamiss\", \"Shredder\", \"Charger\", \"Ripper\", \"Powder Slayer\"",
+									"];",
+									"",
+									"// Function to get a random subset of snowboard lineup names",
+									"function getRandomLineup(list, min = 1, max = 5) {",
+									"    const lineupCount = Math.floor(Math.random() * (max - min + 1)) + min; ",
+									"    const lineup = new Set();",
+									"    while (lineup.size < lineupCount) {",
+									"        const randomItem = list[Math.floor(Math.random() * list.length)];",
+									"        lineup.add(randomItem); // Avoid duplicates by using a Set",
+									"    }",
+									"    return Array.from(lineup);",
+									"}",
+									"",
+									"// Generate a random snowboard lineup, save as variable in JSON format",
+									"const randomLineup = getRandomLineup(snowboardLineupList);",
+									"pm.collectionVariables.set(\"SnowboardLineup\", JSON.stringify(randomLineup));",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse the POST response JSON to get the snowboard ID",
+									"const responseJson = pm.response.json();",
+									"const snowboardId = responseJson.id; // Using \"id\" as per response structure",
+									"",
+									"// Set the snowboardId in the collection variables",
+									"pm.collectionVariables.set(\"snowboardId\", snowboardId);",
+									"",
+									"// Update the URLs for the PUT and DELETE requests for the snowboard",
+									"const baseUrl = pm.collectionVariables.get(\"baseUrl\");",
+									"const putUrl = `${baseUrl}/api/snowboards/${snowboardId}`;",
+									"const deleteUrl = `${baseUrl}/api/snowboards/${snowboardId}`;",
+									"pm.collectionVariables.set(\"PutSnowboardUrl\", putUrl);",
+									"pm.collectionVariables.set(\"DeleteSnowboardUrl\", deleteUrl);",
+									"",
+									"// Update the URLs for the PUT and DELETE requests for ratings",
+									"const putRatingUrl = `${baseUrl}/api/snowboards/${snowboardId}/ratings`;",
+									"const deleteRatingUrl = `${baseUrl}/api/snowboards/${snowboardId}/ratings`;",
+									"pm.collectionVariables.set(\"PutSnowboardRatingUrl\", putRatingUrl);",
+									"pm.collectionVariables.set(\"DeleteSnowboardRatingUrl\", deleteRatingUrl);",
+									"",
+									"pm.test(\"Status code is 201 Created\", function () {",
+									"  pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response contains all expected fields\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const expectedBrand = pm.collectionVariables.get(\"SnowboardBrand\");",
+									"    const expectedYear = pm.collectionVariables.get(\"YearOfRelease\");",
+									"    const expectedLineup = JSON.parse(pm.collectionVariables.get(\"SnowboardLineup\"));",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData).to.have.property(\"snowboardBrand\", expectedBrand);",
+									"    pm.expect(jsonData).to.have.property(\"yearOfRelease\", expectedYear);",
+									"    pm.expect(jsonData.snowboardLineup).to.eql(expectedLineup);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"SnowboardBrand\": \"{{SnowboardBrand}}\",\r\n  \"YearOfRelease\": {{YearOfRelease}},\r\n  \"SnowboardLineup\": {{SnowboardLineup}}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/snowboards",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"snowboards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Snowboard",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "api-version",
+								"value": "application/json;api-version=1.0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/snowboards/{{snowboardId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"snowboards",
+								"{{snowboardId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Snowboards",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json;api-version=2.0",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/snowboards/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"snowboards",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Snowboard",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// List of snowboard brands",
+									"const brands = [\"Burton\", \"Never Summer\", \"CAPiTA\", \"GNU\", \"Salomon\", \"Lib Tech\", \"Roxy\", \"Bataleon\", \"Nitro\", \"Rossignol\", \"Nidecker\", \"K2\", \"Whitespace\", \"Jones\", \"Rome\", \"Flow\"];",
+									"",
+									"// Generate a unique random snowboard brand and save as variable",
+									"const randomBrand = brands[Math.floor(Math.random() * brands.length)];",
+									"pm.variables.set(\"SnowboardBrand\", `${randomBrand}-${Math.floor(Math.random() * 1000)}`);",
+									"",
+									"// Generate a random release year between 1965 and the next calendar year",
+									"const minYear = 1965;",
+									"const maxYear = new Date().getUTCFullYear() + 1;",
+									"const randomYear = Math.floor(Math.random() * (maxYear - minYear)) + minYear;",
+									"pm.variables.set(\"YearOfRelease\", randomYear);",
+									"",
+									"// List of possible snowboard lineup names",
+									"const snowboardLineupList = [",
+									"    \"Custom\", \"Process\", \"Deep Thinker\", \"Family Tree Hometown Hero\", \"Kilroy Twin\", \"Flight Attendant\",",
+									"    \"Free Thinker\", \"Name Dropper\", \"Proto Slinger\", \"West Bound\", \"Harpoon\", \"Maverix\", \"Swift\",",
+									"    \"Shaper Twin\", \"Big Gun\", \"Defenders of Awesome\", \"Super DOA\", \"Mercury\", \"Paradise\", ",
+									"    \"Birds of a Feather\", \"The Outsiders\", \"Riders Choice\", \"Gremlin\", \"Head Space\", \"Mullair\", ",
+									"    \"Money\", \"Ravish\", \"Barrett\", \"Assassin\", \"Huck Knife\", \"Dancehaul\", \"Super 8\", \"Craft\", ",
+									"    \"Pulse\", \"Sleepwalker\", \"T.Rice Pro\", \"Skate Banana\", \"Orca\", \"Cold Brew\", \"Box Scratcher\", ",
+									"    \"Lost Retro Ripper\", \"Dynamiss\", \"Shredder\", \"Charger\", \"Ripper\", \"Powder Slayer\"",
+									"];",
+									"",
+									"// Function to get a random subset of snowboard lineup names",
+									"function getRandomLineup(list, min = 1, max = 5) {",
+									"    const lineupCount = Math.floor(Math.random() * (max - min + 1)) + min; ",
+									"    const lineup = new Set();",
+									"    while (lineup.size < lineupCount) {",
+									"        const randomItem = list[Math.floor(Math.random() * list.length)];",
+									"        lineup.add(randomItem); // Avoid duplicates by using a Set",
+									"    }",
+									"    return Array.from(lineup);",
+									"}",
+									"",
+									"// Generate a random snowboard lineup, save as variable in JSON format",
+									"const randomLineup = getRandomLineup(snowboardLineupList);",
+									"pm.variables.set(\"SnowboardLineup\", JSON.stringify(randomLineup));",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 OK for successful update\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains updated fields\", function () {",
+									"    const jsonData = pm.response.json();",
+									"    const expectedBrand = pm.collectionVariables.get(\"SnowboardBrand\");",
+									"    const expectedYear = pm.collectionVariables.get(\"YearOfRelease\");",
+									"    const expectedLineup = JSON.parse(pm.collectionVariables.get(\"SnowboardLineup\"));",
+									"",
+									"    pm.expect(jsonData).to.have.property(\"snowboardBrand\", expectedBrand);",
+									"    pm.expect(jsonData).to.have.property(\"yearOfRelease\", expectedYear);",
+									"    pm.expect(jsonData.snowboardLineup).to.eql(expectedLineup);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"SnowboardBrand\": \"{{SnowboardBrand}}\",\r\n  \"YearOfRelease\": {{YearOfRelease}},\r\n  \"SnowboardLineup\": {{SnowboardLineup}}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/snowboards/{{snowboardId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"snowboards",
+								"{{snowboardId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Snowboard",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "d1f27e9d-8b7a-4a6e-9116-45d8e3a1d2b4",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/snowboards/{{snowboardId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"snowboards",
+								"{{snowboardId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ratings",
+			"item": [
+				{
+					"name": "Rate Snowboard",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rating\": 5\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/snowboards/{{snowboardId}}/ratings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"snowboards",
+								"{{snowboardId}}",
+								"ratings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get my ratings",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/ratings/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"ratings",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete rating",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/snowboards/{{snowboardId}}/ratings",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"snowboards",
+								"{{snowboardId}}",
+								"ratings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7001/_health",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7001",
+							"path": [
+								"_health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "snowboardId",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://localhost:7001"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "PutSnowboardUrl",
+			"value": ""
+		},
+		{
+			"key": "DeleteSnowboardUrl",
+			"value": ""
+		},
+		{
+			"key": "PutSnowboardRatingUrl",
+			"value": ""
+		},
+		{
+			"key": "DeleteSnowboardRatingUrl",
+			"value": ""
+		},
+		{
+			"key": "SnowboardBrand",
+			"value": ""
+		},
+		{
+			"key": "YearOfRelease",
+			"value": ""
+		},
+		{
+			"key": "SnowboardLineup",
+			"value": ""
+		}
+	]
+}
