@@ -6,18 +6,17 @@
 - [SnowboardShop.Contracts](#snowboardshopcontracts)
 - [SnowboardShop.Api.Tests.Integration](#snowboardshopapitestsintegration)
 - [Helpers](#helpers)
-  - [Identity API](#identity-api)
+  - [Identity.Api](#identity-api)
   - [Postman Collection & Swagger](#postman-collection--swagger)
 
-This repository contains a demo for the test automation framework developed for the SnowboardShop API, including multiple projects: the ``SnowboardShop.Api`` for managing snowboards and ratings, the ``SnowboardShop.Application`` layer for business logic and data management, Contracts for defining API request and response models, the ``SnwboardShop.Api.Tests.Integration`` to validate API functionalities, and Helper services like the ``Identity.Api`` for authentication. Additionally, ``Postman Collection`` and ``Swagger Documentation`` are available for manual debugging after running the database from ``docker-compose.yml`` and starting the ``SnowboardShop.Api``.    
-
-More details about running the API Integration Tests, Docker setup, and the Postman Collection/Swagger are provided in the respective sections below.
+This solution contains a demo for the test automation framework developed for the ``SnowboardShop.Api``, including multiple projects: the ``SnowboardShop.Api`` for managing snowboards and ratings, the ``SnowboardShop.Application`` layer for business logic and data management, Contracts for defining API request and response models, the ``SnwboardShop.Api.Tests.Integration`` to validate API functionalities, and Helper services like the ``Identity.Api`` for authentication. Additionally, ``Postman Collection`` and ``Swagger Documentation`` are available for manual debugging after running the database from ``docker-compose.yml`` and starting the ``SnowboardShop.Api``. More details about running the API Integration Tests, Docker setup, and the Postman Collection/Swagger are provided in the respective sections below. 
 
 The repository pattern is a central piece of the solution. It is used to abstract data access logic from business logic and the API layer, keeping the database access code separate from both business logic and API logic. This separation makes the system more maintainable, testable, and flexible, as data access can be modified or replaced without affecting the rest of the application. The API layer interacts with the business logic through well-defined interfaces, ensuring that changes in the data access layer do not impact the API or business logic directly.
 
-The integration tests utilize ``Testcontainers`` to orchestrate dependent services such as PostgreSQL and the ``Identity.Api`` using ``docker-compose.yml``, ensuring that all services are properly connected for testing purposes. The web application runs in-memory during tests, using the ``WebApplicationFactory`` to create an in-memory version of the API for testing purposes.
+The test automation framework leverages several tools and technologies to create a robust and maintainable testing environment. The integration tests are built on ```.NET 8.0``` and use ``xUnit`` as the testing framework. ``Testcontainers`` is used to create and manage ``PostgreSQL`` and ``IdentityApi`` instances in isolated Docker containers for consistent and reliable test environments. ``Moq`` is used for mocking external dependencies to ensure tests remain isolated, while ``FluentAssertions`` provides a more expressive syntax for assertions, enhancing readability. ``Bogus`` is employed to generate realistic, fake test data, ensuring diversity in the test scenarios. Additionally, the ``WebApplicationFactory<TEntryPoint>.cs`` class from
+``Microsoft.AspNetCore.Mvc.Testing`` allow us to run the web application in-memory for faster testing via the Web, and ``RestSharp`` facilitates creating and managing API requests during the tests. Configuration management is handled by ``DotNetEnv``, ensuring flexibility by loading environment variables from external files. ``Dapper`` is used for database interactions, providing a lightweight and efficient way to execute SQL queries and map the results to objects.
 
-The Identity.Api contains a ``FakeVault`` for managing credentials and sensitive information within this demo framework. This setup is **purely for demonstration purposes and should not be used in a production environment.**  Replace these with secure storage and secret management practices for any deployment to a real environment. 
+The ``Identity.Api`` contains a ``FakeVault`` for managing credentials and sensitive information within this demo framework. This setup is **purely for demonstration purposes and should not be used in a production environment.**  Replace these with secure storage and secret management practices for any deployment to a real environment. 
 
 **Do not commit sensitive information** to public repositories or production environments without proper encryption or security measures. This setup is intended to help reviewers run and understand the demo framework locally without needing access to actual secrets management systems, but it is not a secure approach. For more information, please refer to the additional README ``IMPORTANT_DemoSecrets.md`` located in the ``Identity.Api`` project, which provides further details about handling secrets in a secure manner.
 
@@ -102,7 +101,7 @@ The test data components provide a consistent and predictable test environment b
 ---------
 
 ### Helpers
-#### Identity API
+#### Identity.Api
 
 **<u>In a production environment, secrets, credentials, database connection strings, API keys, and any other sensitive information should never be hardcoded or stored in version control, but rather managed securely using environment variables or dedicated secret management services (e.g., AWS Secrets Manager, Azure Key Vault, Docker Secrets).</u>**
 
