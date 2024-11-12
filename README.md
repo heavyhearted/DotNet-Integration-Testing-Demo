@@ -9,7 +9,7 @@
   - [Identity.Api](#identity-api)
   - [Postman Collection & Swagger](#postman-collection--swagger)
 
-This solution contains a demo for the test automation framework developed for the ``SnowboardShop.Api``, including multiple projects: the ``SnowboardShop.Api`` for managing snowboards and ratings, the ``SnowboardShop.Application`` layer for business logic and data management, ``SnowboardShop.Contracts`` for defining API request and response models, the ``SnwboardShop.Api.Tests.Integration`` to validate API functionalities, and Helper services like the ``Identity.Api`` for authentication.``Postman Collection`` and ``Swagger Documentation`` are available for manual debugging after running the database from ``docker-compose.yml`` and starting the ``SnowboardShop.Api``. 
+This solution contains a demo for the test automation framework developed for the ``SnowboardShop.Api``, including multiple projects: the ``SnowboardShop.Api`` for managing snowboards and ratings, the ``SnowboardShop.Application`` layer for business logic and data management, ``SnowboardShop.Contracts`` for defining API request and response models, the ``SnowboardShop.Api.Tests.Integration`` to validate API functionalities, and Helper services like the ``Identity.Api`` for authentication.``Postman Collection`` and ``Swagger Documentation`` are available for manual debugging after running the database from ``docker-compose.yml`` and starting the ``SnowboardShop.Api``. 
 
 More details about running the API Integration Tests, Docker setup, and the Postman Collection/Swagger are provided in the respective sections below. 
 
@@ -32,7 +32,7 @@ For more information, please refer to the additional README ``IMPORTANT_DemoSecr
 - **Description:** This is the main Web API project that provides the core functionalities of the SnowboardShop, managing endpoints for snowboards and ratings, including CRUD operations.
 
   - Controllers, such as SnowboardsController and RatingsController, are thin and delegate business logic to the Application layer.
-  - References the SnowboardShop.Application and SnowboardShop.Contracts projects.
+  - References the ``SnowboardShop.Application`` and ``SnowboardShop.Contracts`` projects.
   - Uses Dependency Injection to manage services and repositories, specifically by configuring dependency injection in the ``ApplicationServiceCollectionExtensions.cs`` class located in the ``SnowboardShop.Application`` project. This class registers services like ISnowboardRepository, IRatingService, and validators, allowing them to be injected into controllers and services without direct instantiation.
   - Implements ``Dapper`` for database interactions to maintain flexibility and control over database layers, allowing the database to be easily swapped in the future if needed. 
   - The ``IApiMarker`` interface is used as a marker interface to locate the API's entry point and is referenced in integration tests for configuring the WebApplicationFactory.
@@ -48,7 +48,7 @@ This project encapsulates the core business functionalities without being aware 
   - Services are registered using dependency injection abstractions without the application layer having a direct dependency on other services, which helps achieve separation of concerns.
   - The Validators are implemented using ``FluentValidation`` to validate the data models before they are processed by the service or repository.
   - Separation of concerns is maintained by dividing responsibilities between repositories (data access), services (business logic), and controllers (API endpoints).
-- ``ApplicationServiceCollectionExtensions.cs`` handles dependency injection abstractions (IServiceCollection), allowing repositories, services, and validators to be injected where needed without tightly coupling the components. It is a central class for managing dependencies, ensuring that all services are configured and ready to use. This registration is included in the API project by calling ``builder.Services.AddApplication();`` within the ``Program.cs`` file.
+- ``ApplicationServiceCollectionExtensions.cs`` handles dependency injection abstractions (``IServiceCollection``), allowing repositories, services, and validators to be injected where needed without tightly coupling the components. It is a central class for managing dependencies, ensuring that all services are configured and ready to use. This registration is included in the API project by calling ``builder.Services.AddApplication();`` within the ``Program.cs`` file.
 ------------------------------------------------------------------------
 ### SnowboardShop.Contracts
 
@@ -63,7 +63,7 @@ This project encapsulates the core business functionalities without being aware 
 
 ### Framework Overview
 
-- **Description:** ``The SnowboardShop.Api.Tests.Integration`` project is the backbone of the ``SnowboardShopApi``'s testing strategy. It ensures that the various components of the system interact seamlessly, all while maintaining the same standards as in the production environment. The use of Testcontainers, the WebApplicationFactory, mocking, and dependency injection all contribute to making this a robust and reliable testing setup. This comprehensive approach to integration testing helps maintain the quality, reliability, and robustness of the ``SnowboardShopApi`` as it evolves.
+- **Description:** ``The SnowboardShop.Api.Tests.Integration`` project is the backbone of the ``SnowboardShopApi``'s testing strategy. It ensures that the various components of the system interact seamlessly, all while maintaining the same standards as in the production environment. The use of ``Testcontainers``, the ``WebApplicationFactory``, mocking via ``Moq``, and Dependency Injection all contribute to making this a robust and reliable testing setup. This comprehensive approach to integration testing helps maintain the quality, reliability, and robustness of the ``SnowboardShopApi`` as it evolves.
 
 
 **Core:**
@@ -115,7 +115,7 @@ The test data components provide a consistent and predictable test environment b
 - **Description:** The ``Identity.Api`` provides an authentication service for generating JSON Web Tokens (JWTs) for users of the ``SnowboardShop.Api``. This is a supporting service for demonstration purposes, not intended for production use.
   - **IdentityController.cs:** This controller provides a /token endpoint, which accepts a request to generate an access token. The token generation uses a symmetric key (retrieved from the FakeVault), which means the same key is used for both signing and verifying the token. This is not recommended for production where asymmetric keys (e.g., public/private key pair) should be used for enhanced security.
   - **FakeVault:** Located in _FakeVault/Core/FakeVault.cs_, the ``FakeVault`` serves as a placeholder for storing credentials and other sensitive information in a controlled manner, suitable only for a non-production environment.
-  - **DemoSecrets Folder:** Contains demo environment configuration and secrets, such as demo.env and demo_postgres_password.txt. These files help simplify the setup process for local use but must never be committed to version control to avoid compromising sensitive information.
+  - **DemoSecrets Folder:** Contains demo environment configuration and secrets, such as _demo.env_ and _demo_postgres_password.txt_. These files help simplify the setup process for local use for the purposes of the demo, but **must never be committed to version control** in real development environment to avoid compromising sensitive information.
   - **Dockerfile:** The Dockerfile within the ``Identity.Api`` project builds the application and generates a self-signed SSL certificate for local testing. This approach is not secure for production, where certificates from a trusted Certificate Authority should be used. 
   - **TokenGenerationRequest:** This class models the payload needed to generate a token, including properties like UserId, Email, and CustomClaims. The claims are included in the JWT for identity verification and are customizable based on the request.
 
