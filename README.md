@@ -1,3 +1,7 @@
+# Build & Test Status
+
+[![.NET](https://github.com/heavyhearted/DotNet-Integration-Testing-Demo/actions/workflows/dotnet.yml/badge.svg)](https://github.com/heavyhearted/DotNet-Integration-Testing-Demo/actions/workflows/dotnet.yml)![.NET Workflow Tests](https://gist.githubusercontent.com/heavyhearted/6978faede933383f52c9839c6aeae141/raw/badge.svg)
+
 # Repository & Solution Overview
 
 - [Repository & Solution Overview](#repository--solution-overview)
