@@ -9,7 +9,7 @@ namespace Identity.Api.Controllers;
 
 public class IdentityServiceResponse
 {
-    public string AccessToken { get; set; }
+    public required string AccessToken { get; set; }
 }
 
 [ApiController]
